@@ -1,5 +1,5 @@
 ﻿namespace LogicCalculator.Core;
 
-public class Class1
+public class LogicCalc
 {
 }
