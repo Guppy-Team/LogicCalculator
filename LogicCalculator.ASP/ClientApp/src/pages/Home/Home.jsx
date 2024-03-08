@@ -1,11 +1,13 @@
+import clsx from 'clsx';
 import React, { useState } from 'react';
 
+import { Title } from '../../components/Title';
 import { Button } from '../../components/Button';
 import { InputField } from '../../components/InputField';
-import { Title } from '../../components/Title';
+import { LexemeTable } from '../../components/LexemeTable';
+import { TruthTable } from '../../components/TruthTable';
 
 import styles from './Home.module.scss';
-import { LexemeTable } from '../../components/LexemeTable/LexemeTable';
 
 export const Home = () => {
   const [expression, setExpression] = useState('');
@@ -14,6 +16,8 @@ export const Home = () => {
   const [result, setResult] = useState('');
 
   const [lexemes, setLexemes] = useState([]);
+  const [truthTableVariables, setTruthTableVariables] = useState([]);
+  const [values, setValues] = useState([]);
 
   const handleCreateLexemeList = () => {
     console.log('список лексем');
@@ -37,6 +41,8 @@ export const Home = () => {
 
   const handleCalculate = () => {
     console.log('результат зависит от типа выражения');
+
+    setResult('тут будет результат выполнения');
   };
 
   return (
@@ -75,7 +81,7 @@ export const Home = () => {
 
           {isVariablesVisible && (
             <div className={styles.variablesWrapper}>
-              <p className={styles.variablesDescr}>
+              <p className={styles.inputLabel}>
                 Введите переменные в виде <span>a = 12; b = -2;</span>:
               </p>
 
@@ -85,6 +91,19 @@ export const Home = () => {
                 placeholder="a = 12; b = -2; c = 55;"
                 className={styles.input}
                 onChange={setVariables}
+              />
+            </div>
+          )}
+
+          {result && (
+            <div className={styles.resultWrapper}>
+              <p className={styles.inputLabel}>Результат:</p>
+
+              <InputField
+                as="textarea"
+                value={result}
+                disabled
+                className={clsx(styles.input, styles.resultInput)}
               />
             </div>
           )}
@@ -99,6 +118,33 @@ export const Home = () => {
           )}
         </div>
       </div>
+
+      <Button
+        onClick={() => {
+          setTruthTableVariables(['a', 'b']);
+          setValues([
+            { a: false, b: false, result: false },
+            { a: false, b: true, result: false },
+            { a: true, b: false, result: false },
+            { a: true, b: true, result: true },
+          ]);
+          setExpression('a && b');
+        }}
+      >
+        тест таблицы истинности
+      </Button>
+
+      {values.length > 0 && (
+        <>
+          <h2>Таблица истинности</h2>
+
+          <TruthTable
+            expression={expression}
+            variables={truthTableVariables}
+            values={values}
+          />
+        </>
+      )}
     </>
   );
 };

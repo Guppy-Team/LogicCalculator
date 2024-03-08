@@ -28,13 +28,10 @@
 	display: flex;
 	gap: 10px;
 	flex-wrap: wrap;
+	margin-bottom: 10px;
 }
 
-.variablesWrapper {
-	margin-top: 10px;
-}
-
-.variablesDescr {
+.inputLabel {
 	margin-bottom: 5px;
 
 	span {
@@ -45,4 +42,11 @@
 
 .lexemeTable {
 	margin-top: 10px;
+}
+
+.resultInput {
+	height: 100px;
+	resize: none;
+	color: $textColor;
+	cursor: text;
 }

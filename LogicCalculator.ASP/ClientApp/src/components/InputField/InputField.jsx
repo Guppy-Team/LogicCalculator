@@ -9,27 +9,27 @@ export const InputField = ({
   type = 'text',
   value,
   onChange,
+  disabled,
   ...props
 }) => {
-  const [internalValue, setInternalValue] = useState('');
-
   const handleChange = (event) => {
-    setInternalValue(event.target.value);
-    onChange && onChange(event.target.value); // Call external handler if provided
+    onChange(event.target.value);
   };
 
   const combinedClassName = clsx(styles.root, className);
 
   return as === 'textarea' ? (
     <textarea
-      value={internalValue}
+      value={value}
+      disabled={disabled}
       onChange={handleChange}
       className={combinedClassName}
       {...props}
     />
   ) : (
     <input
-      value={internalValue}
+      value={value}
+      disabled={disabled}
       onChange={handleChange}
       className={combinedClassName}
       type={type}
