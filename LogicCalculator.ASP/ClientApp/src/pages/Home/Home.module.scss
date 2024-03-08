@@ -12,6 +12,12 @@
 	}
 }
 
+.columnsWrapper {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 50px;
+}
+
 .input {
 	width: 450px;
 	min-height: 70px;
@@ -35,4 +41,8 @@
 		font-family: monospace;
 		color: red;
 	}
+}
+
+.lexemeTable {
+	margin-top: 10px;
 }

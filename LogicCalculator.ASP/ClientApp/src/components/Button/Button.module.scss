@@ -18,9 +18,21 @@
 	cursor: pointer;
 	transition: all 0.15s ease 0s;
 
-	&:active {
+	&:active:not(:disabled) {
 		transform: translateY(1px);
-		box-shadow: none;
+		box-shadow: unset;
+		outline: none;
+	}
+
+	&:hover:not(:disabled):not(.main) {
+		background-color: #e5e5e5;
+	}
+
+	&:disabled {
+		cursor: unset;
+		transform: translateY(0px);
+		box-shadow: unset;
+		background-color: #9dadd6;
 	}
 }
 

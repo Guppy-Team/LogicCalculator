@@ -1,0 +1,32 @@
+@import '../../scss/variables';
+
+.root {
+	width: 100%;
+	background-color: #f6f4fb;
+	border-collapse: collapse;
+
+	border: 2px solid $strokeColor;
+	border-radius: 7px;
+	overflow: hidden;
+
+	thead {
+
+		tr {
+			font-weight: 700;
+		}
+	}
+
+	th,
+	td {
+		padding: 5px 15px;
+		text-align: left;
+	}
+
+	td:first-child {
+		width: calc(100%/3);
+	}
+
+	td:last-child {
+		text-align: right;
+	}
+}
