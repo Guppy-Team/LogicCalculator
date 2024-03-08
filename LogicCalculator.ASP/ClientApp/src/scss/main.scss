@@ -1,0 +1,17 @@
+@import-normalize;
+@import './reset';
+@import './variables';
+
+body {
+	position: relative;
+	font-family: 'Inter', sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	line-height: normal;
+	color: $textColor;
+	background-color: $backgroundColor;
+}
+
+#root {
+	height: 100vh;
+}

@@ -1,0 +1,30 @@
+@import '../../scss/variables';
+
+.root {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 5px 10px;
+	border-radius: 8px;
+	border: 1px solid $strokeColor;
+	background-color: #F5F5F5;
+	box-shadow: 1px 2px 0px 0px rgba(0, 0, 0, 0.20);
+	color: $textColor;
+	font-family: "Inter", sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+	cursor: pointer;
+	transition: all 0.15s ease 0s;
+
+	&:active {
+		transform: translateY(1px);
+		box-shadow: none;
+	}
+}
+
+.main {
+	background-color: #B3C8FF;
+	font-weight: 700;
+}
