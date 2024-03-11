@@ -15,7 +15,9 @@
 .columnsWrapper {
 	display: grid;
 	grid-template-columns: 2fr 1fr;
-	gap: 50px;
+	grid-template-rows: auto 1fr;
+	align-items: stretch;
+	gap: 20px 50px;
 }
 
 .input {
@@ -38,6 +40,10 @@
 		font-family: monospace;
 		color: red;
 	}
+}
+
+.lexemeTableWrapper {
+	grid-row: span 2;
 }
 
 .lexemeTable {

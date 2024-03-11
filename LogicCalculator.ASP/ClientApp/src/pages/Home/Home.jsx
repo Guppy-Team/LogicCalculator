@@ -10,36 +10,19 @@ import { TruthTable } from '../../components/TruthTable';
 import styles from './Home.module.scss';
 
 export const Home = () => {
-  const [expression, setExpression] = useState('');
-  const [variables, setVariables] = useState('');
-  const [isVariablesVisible, setVariablesVisible] = useState(false);
+  const [expressionValue, setExpressionValue] = useState('');
+  const [variablesValue, setVariablesValue] = useState('');
   const [result, setResult] = useState('');
 
-  const [lexemes, setLexemes] = useState([]);
-  const [truthTableVariables, setTruthTableVariables] = useState([]);
-  const [values, setValues] = useState([]);
-
-  const handleCreateLexemeList = () => {
-    console.log('список лексем');
-
-    setLexemes([
-      { value: '1', type: 'number', priority: '0' },
-      { value: '/', type: 'sign', priority: '2' },
-      { value: '2', type: 'number', priority: '0' },
-      { value: '+', type: 'sign', priority: '1' },
-      { value: '(', type: 'left_bracket', priority: '3' },
-      { value: '2', type: 'number', priority: '0' },
-      { value: '+', type: 'sign', priority: '1' },
-      { value: '3', type: 'number', priority: '0' },
-      { value: ')', type: 'right_bracket', priority: '3' },
-    ]);
-  };
+  const [isVariablesVisible, setVariablesVisible] = useState(false);
+  const [isTruthTableVisible, setTruthTableVisible] = useState(false);
+  const [isLexemeTableVisible, setLexemeTableVisible] = useState(false);
 
   const handleToggleVariablesVisibility = () => {
     setVariablesVisible(!isVariablesVisible);
   };
 
-  const handleCalculate = () => {
+  const calculateExpression = () => {
     console.log('результат зависит от типа выражения');
 
     setResult('тут будет результат выполнения');
@@ -56,13 +39,13 @@ export const Home = () => {
       </p>
 
       <div className={styles.columnsWrapper}>
-        <div className={styles.inputWrapper}>
+        <section className={styles.inputWrapper}>
           <InputField
             as="textarea"
             placeholder="Введите выражение"
             className={styles.input}
-            value={expression}
-            onChange={setExpression}
+            value={expressionValue}
+            onChange={setExpressionValue}
           />
 
           <div className={styles.buttonGroup}>
@@ -71,9 +54,17 @@ export const Home = () => {
             </Button>
 
             <Button
-              onClick={handleCalculate}
+              onClick={() => {
+                setTruthTableVisible(true);
+              }}
+            >
+              Создать таблицу истинности
+            </Button>
+
+            <Button
+              onClick={calculateExpression}
               main
-              disabled={expression.trim().length === 0}
+              disabled={expressionValue.trim().length === 0}
             >
               Вычислить
             </Button>
@@ -87,10 +78,10 @@ export const Home = () => {
 
               <InputField
                 as="textarea"
-                value={variables}
+                value={variablesValue}
                 placeholder="a = 12; b = -2; c = 55;"
                 className={styles.input}
-                onChange={setVariables}
+                onChange={setVariablesValue}
               />
             </div>
           )}
@@ -107,44 +98,27 @@ export const Home = () => {
               />
             </div>
           )}
-        </div>
+        </section>
 
-        <div className={styles.lexemeTableWrapper}>
-          <Button onClick={handleCreateLexemeList}>
+        <section className={styles.lexemeTableWrapper}>
+          <Button onClick={() => setLexemeTableVisible(true)}>
             Создать список лексем
           </Button>
-          {lexemes.length > 0 && (
-            <LexemeTable lexemes={lexemes} className={styles.lexemeTable} />
+
+          {isLexemeTableVisible && (
+            <LexemeTable className={styles.lexemeTable} />
           )}
-        </div>
+        </section>
+
+        <section className={styles.truthTableWrapper}>
+          {isTruthTableVisible && (
+            <>
+              <h2>Таблица истинности</h2>
+              <TruthTable />
+            </>
+          )}
+        </section>
       </div>
-
-      <Button
-        onClick={() => {
-          setTruthTableVariables(['a', 'b']);
-          setValues([
-            { a: false, b: false, result: false },
-            { a: false, b: true, result: false },
-            { a: true, b: false, result: false },
-            { a: true, b: true, result: true },
-          ]);
-          setExpression('a && b');
-        }}
-      >
-        тест таблицы истинности
-      </Button>
-
-      {values.length > 0 && (
-        <>
-          <h2>Таблица истинности</h2>
-
-          <TruthTable
-            expression={expression}
-            variables={truthTableVariables}
-            values={values}
-          />
-        </>
-      )}
     </>
   );
 };
