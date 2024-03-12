@@ -6,6 +6,7 @@ import { Button } from '../../components/Button';
 import { InputField } from '../../components/InputField';
 import { LexemeTable } from '../../components/LexemeTable';
 import { TruthTable } from '../../components/TruthTable';
+import { TreeGraph } from '../../components/TreeGraph';
 
 import styles from './Home.module.scss';
 
@@ -17,6 +18,7 @@ export const Home = () => {
   const [isVariablesVisible, setVariablesVisible] = useState(false);
   const [isTruthTableVisible, setTruthTableVisible] = useState(false);
   const [isLexemeTableVisible, setLexemeTableVisible] = useState(false);
+  const [isTreeGraphVisible, setTreeGraphVisible] = useState(false);
 
   const handleToggleVariablesVisibility = () => {
     setVariablesVisible(!isVariablesVisible);
@@ -26,6 +28,19 @@ export const Home = () => {
     console.log('результат зависит от типа выражения');
 
     setResult('тут будет результат выполнения');
+  };
+
+  const data = {
+    name: '+',
+    children: [
+      {
+        name: '1',
+      },
+      {
+        name: '*',
+        children: [{ name: '2' }, { name: '3' }],
+      },
+    ],
   };
 
   return (
@@ -59,6 +74,14 @@ export const Home = () => {
               }}
             >
               Создать таблицу истинности
+            </Button>
+
+            <Button
+              onClick={() => {
+                setTreeGraphVisible(true);
+              }}
+            >
+              Построить дерево лексем
             </Button>
 
             <Button
@@ -110,14 +133,19 @@ export const Home = () => {
           )}
         </section>
 
-        <section className={styles.truthTableWrapper}>
-          {isTruthTableVisible && (
+        {isTruthTableVisible && (
+          <section className={styles.truthTableWrapper}>
             <>
-              <h2>Таблица истинности</h2>
               <TruthTable />
             </>
-          )}
-        </section>
+          </section>
+        )}
+
+        {isTreeGraphVisible && (
+          <section className={styles.treeGraphWrapper}>
+            <TreeGraph expression={expressionValue} />
+          </section>
+        )}
       </div>
     </>
   );

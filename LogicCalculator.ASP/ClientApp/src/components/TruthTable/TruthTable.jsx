@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import styles from './TruthTable.module.scss';
+import { Loading } from '../Loading';
 
 export const TruthTable = () => {
   const [loading, setLoading] = useState(true);
@@ -60,20 +61,24 @@ export const TruthTable = () => {
   }, []);
 
   const table = (
-    <table className={styles.root}>
-      <thead>
-        <tr>
-          {variables.map((variable) => (
-            <th key={variable}>{variable}</th>
-          ))}
+    <>
+      <h2 className={styles.title}>Таблица истинности</h2>
 
-          <th>{expression}</th>
-        </tr>
-      </thead>
+      <table className={styles.root}>
+        <thead>
+          <tr>
+            {variables.map((variable) => (
+              <th key={variable}>{variable}</th>
+            ))}
 
-      <tbody>{truthTableRows}</tbody>
-    </table>
+            <th>{expression}</th>
+          </tr>
+        </thead>
+
+        <tbody>{truthTableRows}</tbody>
+      </table>
+    </>
   );
 
-  return loading ? 'Загрузка...' : table;
+  return loading ? <Loading /> : table;
 };

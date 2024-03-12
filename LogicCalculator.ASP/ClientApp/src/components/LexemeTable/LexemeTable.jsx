@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import styles from './LexemeTable.module.scss';
+import { Loading } from '../Loading';
 
 export const LexemeTable = ({ className }) => {
   const [loading, setLoading] = useState(true);
@@ -46,5 +47,5 @@ export const LexemeTable = ({ className }) => {
     </table>
   );
 
-  return loading ? 'Загрузка...' : table;
+  return loading ? <Loading /> : table;
 };
