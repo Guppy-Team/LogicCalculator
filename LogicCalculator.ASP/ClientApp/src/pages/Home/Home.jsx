@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setExpression } from '../../store/expressionSlice';
 
 import { Title } from '../../components/Title';
 import { Button } from '../../components/Button';
@@ -11,9 +13,11 @@ import { TreeGraph } from '../../components/TreeGraph';
 import styles from './Home.module.scss';
 
 export const Home = () => {
+  const dispatch = useDispatch();
+  const result = useSelector((state) => state.result);
+
   const [expressionValue, setExpressionValue] = useState('');
   const [variablesValue, setVariablesValue] = useState('');
-  const [result, setResult] = useState('');
 
   const [isVariablesVisible, setVariablesVisible] = useState(false);
   const [isTruthTableVisible, setTruthTableVisible] = useState(false);
@@ -25,22 +29,7 @@ export const Home = () => {
   };
 
   const calculateExpression = () => {
-    console.log('результат зависит от типа выражения');
-
-    setResult('тут будет результат выполнения');
-  };
-
-  const data = {
-    name: '+',
-    children: [
-      {
-        name: '1',
-      },
-      {
-        name: '*',
-        children: [{ name: '2' }, { name: '3' }],
-      },
-    ],
+    dispatch(setExpression(expressionValue.trim()));
   };
 
   return (
@@ -78,10 +67,19 @@ export const Home = () => {
 
             <Button
               onClick={() => {
+                dispatch(setExpression(expressionValue.trim()));
                 setTreeGraphVisible(true);
               }}
             >
               Построить дерево лексем
+            </Button>
+
+            <Button
+              onClick={() => {
+                setTreeGraphVisible(true);
+              }}
+            >
+              ПОЛИЗ
             </Button>
 
             <Button
@@ -109,7 +107,7 @@ export const Home = () => {
             </div>
           )}
 
-          {result && (
+          {/* {result && (
             <div className={styles.resultWrapper}>
               <p className={styles.inputLabel}>Результат:</p>
 
@@ -120,7 +118,7 @@ export const Home = () => {
                 className={clsx(styles.input, styles.resultInput)}
               />
             </div>
-          )}
+          )} */}
         </section>
 
         <section className={styles.lexemeTableWrapper}>
@@ -143,7 +141,7 @@ export const Home = () => {
 
         {isTreeGraphVisible && (
           <section className={styles.treeGraphWrapper}>
-            <TreeGraph expression={expressionValue} />
+            <TreeGraph />
           </section>
         )}
       </div>

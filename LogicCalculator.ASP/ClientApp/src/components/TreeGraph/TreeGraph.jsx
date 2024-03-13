@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Tree from 'react-d3-tree';
+import { useSelector } from 'react-redux';
 
 import { Loading } from '../Loading';
 
@@ -16,21 +17,20 @@ const CustomNodeLabel = ({ nodeDatum, toggleNode }) => {
   );
 };
 
-export const TreeGraph = ({ expression }) => {
+export const TreeGraph = () => {
   const [loading, setLoading] = useState(true);
+  const { expression } = useSelector((state) => state.expression);
+
   const [data, setData] = useState({});
 
   useEffect(() => {
     setTimeout(() => {
       setData(rpnToTreeData(expression));
-
-      console.log(data);
-
       setLoading(false);
     }, 1500);
+  }, [expression]);
 
-    console.log(data);
-  }, []);
+  console.log(expression);
 
   function rpnToTreeData(rpn) {
     const stack = [];
