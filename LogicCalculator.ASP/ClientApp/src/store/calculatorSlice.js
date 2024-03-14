@@ -6,26 +6,43 @@ const calculatorSlice = createSlice({
   initialState: {
     expression: '',
     result: '',
+    loading: true,
+    error: null,
   },
   reducers: {
     setExpression: (state, action) => {
       state.expression = action.payload;
     },
+    showError: (state, action) => {
+      state.error = action.payload;
+    },
+    closeError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(convertToRpn.pending, (state) => {
-        state.result = 'Loading...';
+        state.loading = true;
+        state.error = null;
       })
       .addCase(convertToRpn.fulfilled, (state, action) => {
-        state.result = action.payload;
+        if (action.payload.error) {
+          state.error = action.payload.error;
+        } else {
+          state.expression = action.payload.expression;
+          state.result = action.payload;
+          state.error = null;
+        }
+        state.loading = false;
       })
       .addCase(convertToRpn.rejected, (state, action) => {
-        state.result = 'Error: ' + action.error.message;
+        state.error = action.error.message;
+        state.loading = false;
       });
   },
 });
 
-export const { setExpression, setResult } = calculatorSlice.actions;
+export const { setExpression, showError, closeError } = calculatorSlice.actions;
 
 export default calculatorSlice.reducer;

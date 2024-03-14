@@ -1,8 +1,8 @@
-import axios from 'axios';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import Tree from 'react-d3-tree';
 import { useSelector } from 'react-redux';
+import { convertToRpn } from '../../api/convertToRpn';
 import { rpnToTreeData } from '../../utils/rpnToTreeData';
 
 import { Loading } from '../Loading';
@@ -16,20 +16,18 @@ export const TreeGraph = ({ className }) => {
   const [treeData, setTreeData] = useState({});
 
   useEffect(() => {
-    const convertToRpn = async () => {
+    const fetchTreeData = async () => {
       try {
-        const response = await axios.post('/api/ConvertToRpn', {
-          expression,
-        });
-
-        setTreeData(rpnToTreeData(response.data.result));
+        const rpn = await convertToRpn(expression);
+        setTreeData(rpnToTreeData(rpn));
         setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
 
-    convertToRpn();
+    fetchTreeData();
   }, [expression]);
 
   return loading ? (

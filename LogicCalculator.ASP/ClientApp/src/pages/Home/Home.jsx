@@ -2,7 +2,11 @@ import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { convertToRpn } from '../../store/calculatorAction';
-import { setExpression } from '../../store/calculatorSlice';
+import {
+  showError,
+  setExpression,
+  closeError,
+} from '../../store/calculatorSlice';
 
 import { Title } from '../../components/Title';
 import { Button } from '../../components/Button';
@@ -10,12 +14,14 @@ import { InputField } from '../../components/InputField';
 import { LexemeTable } from '../../components/LexemeTable';
 import { TruthTable } from '../../components/TruthTable';
 import { TreeGraph } from '../../components/TreeGraph';
+import { Error } from '../../components/Error';
 
 import styles from './Home.module.scss';
+import { isValidExpression } from '../../utils/isValidExpression';
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const { expression, result } = useSelector((state) => state.calculator);
+  const { result, error } = useSelector((state) => state.calculator);
 
   const [expressionValue, setExpressionValue] = useState('');
   const [variablesValue, setVariablesValue] = useState('');
@@ -30,11 +36,56 @@ export const Home = () => {
   };
 
   const handleCalculateExpression = () => {
-    dispatch(setExpression(expressionValue.trim()));
+    const trimmedExpression = expressionValue.trim();
+
+    if (trimmedExpression.length === 0) {
+      dispatch(
+        showError(
+          'Укажите верное выражение в поле выше, а затем попробуйте снова.',
+        ),
+      );
+
+      setTimeout(() => {
+        dispatch(closeError());
+      }, 7500);
+    } else {
+      const formattedExpression = trimmedExpression.replace(/\s+/g, ' ');
+      setShowTreeGraph(false);
+      dispatch(convertToRpn(formattedExpression));
+    }
   };
 
   const handleConvertToRpn = () => {
-    dispatch(convertToRpn(expressionValue.trim()));
+    const trimmedExpression = expressionValue.trim();
+
+    if (trimmedExpression.length === 0) {
+      dispatch(
+        showError(
+          'Укажите верное выражение в поле выше, а затем попробуйте снова.',
+        ),
+      );
+
+      setTimeout(() => {
+        dispatch(closeError());
+      }, 7500);
+    } else {
+      const formattedExpression = trimmedExpression.replace(/\s+/g, ' ');
+
+      if (isValidExpression(formattedExpression)) {
+        setShowTreeGraph(false);
+        dispatch(convertToRpn(formattedExpression));
+      } else {
+        dispatch(
+          showError(
+            'Выражение не может быть переведено в обратную польскую нотацию. Проверьте корректность выражения.',
+          ),
+        );
+
+        setTimeout(() => {
+          dispatch(closeError());
+        }, 7500);
+      }
+    }
   };
 
   return (
@@ -121,6 +172,8 @@ export const Home = () => {
               />
             </section>
           )}
+
+          {error && <Error message={error} />}
         </section>
 
         <section className={styles.lexemeTableWrapper}>
