@@ -32,6 +32,10 @@
 		cursor: unset;
 		transform: translateY(0px);
 		box-shadow: unset;
+		background-color: #cfcfcf;
+	}
+
+	&:disabled.main {
 		background-color: #9dadd6;
 	}
 }

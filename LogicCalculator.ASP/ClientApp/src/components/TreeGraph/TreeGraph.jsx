@@ -1,73 +1,45 @@
+import axios from 'axios';
+import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import Tree from 'react-d3-tree';
 import { useSelector } from 'react-redux';
+import { rpnToTreeData } from '../../utils/rpnToTreeData';
 
 import { Loading } from '../Loading';
 
 import styles from './TreeGraph.module.scss';
 
-const CustomNodeLabel = ({ nodeDatum, toggleNode }) => {
-  return (
-    <g>
-      <circle r="24" fill="steelblue" onClick={toggleNode} />
-      <text textAnchor="middle" y="7" className={styles.nodeLabel}>
-        {nodeDatum.name}
-      </text>
-    </g>
-  );
-};
-
-export const TreeGraph = () => {
+export const TreeGraph = ({ className }) => {
   const [loading, setLoading] = useState(true);
-  const { expression } = useSelector((state) => state.expression);
+  const { expression } = useSelector((state) => state.calculator);
 
-  const [data, setData] = useState({});
+  const [treeData, setTreeData] = useState({});
 
   useEffect(() => {
-    setTimeout(() => {
-      setData(rpnToTreeData(expression));
-      setLoading(false);
-    }, 1500);
-  }, [expression]);
-
-  console.log(expression);
-
-  function rpnToTreeData(rpn) {
-    const stack = [];
-    const isVariable = (token) => /^[a-zA-Z]$/.test(token);
-
-    for (let token of rpn.split(' ')) {
-      if (['+', '-', '*', '/', '^'].includes(token)) {
-        const right = stack.pop();
-        const left = stack.pop();
-        stack.push({
-          name: token,
-          children: [left, right],
+    const convertToRpn = async () => {
+      try {
+        const response = await axios.post('/api/ConvertToRpn', {
+          expression,
         });
-      } else if (['sin', 'cos', 'tan', 'log', 'exp'].includes(token)) {
-        const child = stack.pop();
-        stack.push({
-          name: token,
-          children: [child],
-        });
-      } else if (isVariable(token) || !isNaN(token)) {
-        stack.push({
-          name: token,
-        });
+
+        setTreeData(rpnToTreeData(response.data.result));
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
       }
-    }
+    };
 
-    return stack[0];
-  }
+    convertToRpn();
+  }, [expression]);
 
   return loading ? (
     <Loading />
   ) : (
-    <div className={styles.root}>
+    <section className={clsx(styles.root, className)}>
       <h2 className={styles.title}>Дерево лексем</h2>
       <div className={styles.graphContainer}>
         <Tree
-          data={data}
+          data={treeData}
           orientation="vertical"
           pathFunc="straight"
           collapsible={false}
@@ -82,6 +54,17 @@ export const TreeGraph = () => {
           )}
         />
       </div>
-    </div>
+    </section>
+  );
+};
+
+const CustomNodeLabel = ({ nodeDatum, toggleNode }) => {
+  return (
+    <g>
+      <circle r="24" fill="steelblue" onClick={toggleNode} />
+      <text textAnchor="middle" y="7" className={styles.nodeLabel}>
+        {nodeDatum.name}
+      </text>
+    </g>
   );
 };

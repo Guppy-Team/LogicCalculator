@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setExpression } from '../../store/expressionSlice';
+import { convertToRpn } from '../../store/calculatorAction';
+import { setExpression } from '../../store/calculatorSlice';
 
 import { Title } from '../../components/Title';
 import { Button } from '../../components/Button';
@@ -14,22 +15,26 @@ import styles from './Home.module.scss';
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const result = useSelector((state) => state.result);
+  const { expression, result } = useSelector((state) => state.calculator);
 
   const [expressionValue, setExpressionValue] = useState('');
   const [variablesValue, setVariablesValue] = useState('');
 
-  const [isVariablesVisible, setVariablesVisible] = useState(false);
-  const [isTruthTableVisible, setTruthTableVisible] = useState(false);
-  const [isLexemeTableVisible, setLexemeTableVisible] = useState(false);
-  const [isTreeGraphVisible, setTreeGraphVisible] = useState(false);
+  const [showVariables, setShowVariables] = useState(false);
+  const [showTruthTable, setShowTruthTable] = useState(false);
+  const [showLexemeTable, setShowLexemeTable] = useState(false);
+  const [showTreeGraph, setShowTreeGraph] = useState(false);
 
-  const handleToggleVariablesVisibility = () => {
-    setVariablesVisible(!isVariablesVisible);
+  const handleToggleVariables = () => {
+    setShowVariables(!showVariables);
   };
 
-  const calculateExpression = () => {
+  const handleCalculateExpression = () => {
     dispatch(setExpression(expressionValue.trim()));
+  };
+
+  const handleConvertToRpn = () => {
+    dispatch(convertToRpn(expressionValue.trim()));
   };
 
   return (
@@ -53,37 +58,34 @@ export const Home = () => {
           />
 
           <div className={styles.buttonGroup}>
-            <Button onClick={handleToggleVariablesVisibility}>
-              {isVariablesVisible ? 'Убрать переменные' : 'Добавить переменные'}
+            <Button onClick={handleToggleVariables}>
+              {showVariables ? 'Убрать переменные' : 'Добавить переменные'}
             </Button>
 
             <Button
               onClick={() => {
-                setTruthTableVisible(true);
+                setShowTruthTable(true);
               }}
             >
               Создать таблицу истинности
             </Button>
 
+            <Button onClick={handleConvertToRpn}>ПОЛИЗ</Button>
+
             <Button
               onClick={() => {
                 dispatch(setExpression(expressionValue.trim()));
-                setTreeGraphVisible(true);
+                setShowTreeGraph(!showTreeGraph);
               }}
+              disabled={expressionValue.trim() === '' ? true : false}
             >
-              Построить дерево лексем
+              {showTreeGraph
+                ? 'Скрыть дерево лексем'
+                : 'Показать дерево лексем'}
             </Button>
 
             <Button
-              onClick={() => {
-                setTreeGraphVisible(true);
-              }}
-            >
-              ПОЛИЗ
-            </Button>
-
-            <Button
-              onClick={calculateExpression}
+              onClick={handleCalculateExpression}
               main
               disabled={expressionValue.trim().length === 0}
             >
@@ -91,8 +93,8 @@ export const Home = () => {
             </Button>
           </div>
 
-          {isVariablesVisible && (
-            <div className={styles.variablesWrapper}>
+          {showVariables && (
+            <section className={styles.variablesWrapper}>
               <p className={styles.inputLabel}>
                 Введите переменные в виде <span>a = 12; b = -2;</span>:
               </p>
@@ -104,11 +106,11 @@ export const Home = () => {
                 className={styles.input}
                 onChange={setVariablesValue}
               />
-            </div>
+            </section>
           )}
 
-          {/* {result && (
-            <div className={styles.resultWrapper}>
+          {result && (
+            <section className={styles.resultWrapper}>
               <p className={styles.inputLabel}>Результат:</p>
 
               <InputField
@@ -117,33 +119,21 @@ export const Home = () => {
                 disabled
                 className={clsx(styles.input, styles.resultInput)}
               />
-            </div>
-          )} */}
-        </section>
-
-        <section className={styles.lexemeTableWrapper}>
-          <Button onClick={() => setLexemeTableVisible(true)}>
-            Создать список лексем
-          </Button>
-
-          {isLexemeTableVisible && (
-            <LexemeTable className={styles.lexemeTable} />
+            </section>
           )}
         </section>
 
-        {isTruthTableVisible && (
-          <section className={styles.truthTableWrapper}>
-            <>
-              <TruthTable />
-            </>
-          </section>
-        )}
+        <section className={styles.lexemeTableWrapper}>
+          <Button onClick={() => setShowLexemeTable(true)}>
+            Создать список лексем
+          </Button>
 
-        {isTreeGraphVisible && (
-          <section className={styles.treeGraphWrapper}>
-            <TreeGraph />
-          </section>
-        )}
+          {showLexemeTable && <LexemeTable className={styles.lexemeTable} />}
+        </section>
+
+        {showTruthTable && <TruthTable className={styles.truthTableWrapper} />}
+
+        {showTreeGraph && <TreeGraph className={styles.treeGraphWrapper} />}
       </div>
     </>
   );

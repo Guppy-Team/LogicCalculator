@@ -16,7 +16,7 @@ public static class Lexer
         { "/", 2 },
         { "^", 3 },
     };
-    
+
     private static Dictionary<string, Func<double, double>> Functions { get; } = new()
     {
         { "sin", Math.Sin },
@@ -50,7 +50,7 @@ public static class Lexer
         string rightBracketPattern = @"\)"; // Правая скобка
 
         string pattern = $"({numberPattern})|({operatorPattern})|({variablePattern})|({functionPattern})|({leftBracketPattern})|({rightBracketPattern})";
-        
+
         Regex regex = new(pattern);
         MatchCollection matches = regex.Matches(expression);
 
@@ -90,16 +90,21 @@ public static class Lexer
     {
         StringBuilder sb = new();
         sb.Append('[');
-        
+
         foreach (var op in OperatorPrecedences)
             sb.Append($@"\{op.Key}");
 
         sb.Append(']');
-        
+
         return sb.ToString();
     }
-    
+
     // Pasha
+    /// <summary>
+    /// Конвертирует лексемы из инфиксного выражения в обратную польскую нотацию
+    /// </summary>
+    /// <param name="infixTokens">Список лексем из инфиксного выражения.</param>
+    /// <returns>Список лексем в порядке польской нотации.</returns>
     /// <summary>
     /// Конвертирует лексемы из инфиксного выражения в обратную польскую нотацию
     /// </summary>
@@ -109,7 +114,7 @@ public static class Lexer
     {
         List<Token> result = new();
         Stack<Token> stack = new();
-        
+
         foreach (Token token in infixTokens)
         {
             switch (token.Type)
@@ -121,8 +126,9 @@ public static class Lexer
 
                 case TokenType.Operator:
                 {
-                    while (stack.Count > 0 && stack.Peek().Type == TokenType.Operator &&
-                           OperatorPrecedences[stack.Peek().Value] >= OperatorPrecedences[token.Value])
+                    while (stack.Count > 0
+                           && stack.Peek().Type == TokenType.Operator
+                           && OperatorPrecedences[stack.Peek().Value] >= OperatorPrecedences[token.Value])
                     {
                         result.Add(stack.Pop());
                     }
@@ -132,6 +138,9 @@ public static class Lexer
                 }
 
                 case TokenType.Function:
+                    stack.Push(token);
+                    break;
+
                 case TokenType.LeftBracket:
                     stack.Push(token);
                     break;
@@ -144,14 +153,20 @@ public static class Lexer
                     }
 
                     stack.Pop();
+
+                    if (stack.Count > 0 && stack.Peek().Type == TokenType.Function)
+                    {
+                        result.Add(stack.Pop());
+                    }
+
                     break;
                 }
             }
         }
 
-        foreach (Token remainingToken in stack)
+        while (stack.Count > 0)
         {
-            result.Add(remainingToken);
+            result.Add(stack.Pop());
         }
 
         return result;
@@ -174,7 +189,7 @@ public static class Lexer
                 case TokenType.Number:
                     stack.Push(double.Parse(token.Value));
                     break;
-                
+
                 case TokenType.Variable:
                     stack.Push(Variables[token.Value]);
                     break;
@@ -241,7 +256,7 @@ public static class Lexer
     {
         return Functions.ContainsKey(token);
     }
-    
+
     // Dasha
     /// <summary>
     /// Проверяет, является ли токен операндом.

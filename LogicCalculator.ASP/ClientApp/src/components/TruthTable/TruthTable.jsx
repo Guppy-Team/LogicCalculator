@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './TruthTable.module.scss';
 import { Loading } from '../Loading';
 
-export const TruthTable = () => {
+export const TruthTable = ({ className }) => {
   const [loading, setLoading] = useState(true);
   const [variables, setVariables] = useState([]);
   const [values, setValues] = useState([]);
@@ -61,7 +61,7 @@ export const TruthTable = () => {
   }, []);
 
   const table = (
-    <>
+    <section className={className}>
       <h2 className={styles.title}>Таблица истинности</h2>
 
       <table className={styles.root}>
@@ -77,7 +77,7 @@ export const TruthTable = () => {
 
         <tbody>{truthTableRows}</tbody>
       </table>
-    </>
+    </section>
   );
 
   return loading ? <Loading /> : table;
