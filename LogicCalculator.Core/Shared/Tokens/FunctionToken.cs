@@ -2,13 +2,14 @@
 
 namespace LogicCalculator.Core.Shared.Tokens;
 
-public class VariableToken : IToken
+public class FunctionToken : IToken
 {
-    public TokenType Type => TokenType.Variable;
+    public TokenType Type => TokenType.Function;
     public string Value { get; }
-    public int Priority => 0;
 
-    public VariableToken(string value)
+    public int Priority => 5;
+
+    public FunctionToken(string value)
     {
         Value = value;
     }

@@ -7,5 +7,6 @@ public enum TokenType
     LeftBracket,
     RightBracket,
     Variable,
+    Function,
     LogicalOperator,
 }
