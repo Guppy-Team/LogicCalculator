@@ -2,6 +2,5 @@
 
 public interface IExpressionEvaluator
 {
-    double Evaluate(List<IToken> tokens);
-    double Evaluate(List<IToken> tokens, Dictionary<string, double> variables);
+    T Evaluate<T>(List<IToken> tokens, Dictionary<string, T> variables) where T : struct;
 }
