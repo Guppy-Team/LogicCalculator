@@ -9,4 +9,5 @@ public enum TokenType
     Variable,
     Function,
     LogicalOperator,
+    Boolean,
 }

@@ -25,4 +25,16 @@ foreach (var token in rpnTokens)
     Console.WriteLine($"Token: {token.Value}, \tType: {token.Type}, \tPriority: {token.Priority}");
 }
 
-Console.WriteLine($"\nResult: {rpnResult}");
+Console.WriteLine($"\nResult: {rpnResult}\n");
+
+
+var logicalExpression = "a && !b || (c => d)";
+var logicalTokenizer = new LogicalTokenizer();
+var logicalExpressionTokens = logicalTokenizer.Tokenize(logicalExpression);
+var logicalExpressionRpnTokens = rpnConverter.Convert(logicalExpressionTokens);
+
+
+foreach (var token in logicalExpressionTokens)
+{
+    Console.WriteLine($"Token: {token.Value}, \tType: {token.Type}, \tPriority: {token.Priority}");
+}

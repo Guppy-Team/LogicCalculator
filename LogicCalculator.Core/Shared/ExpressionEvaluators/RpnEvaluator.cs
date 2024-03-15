@@ -3,7 +3,7 @@ using LogicCalculator.Core.Shared.Tokens;
 
 namespace LogicCalculator.Core.Shared.ExpressionEvaluators;
 
-public class RpnEvaluator
+public class RpnEvaluator : IExpressionEvaluator
 {
     public double Evaluate(List<IToken> tokens)
     {

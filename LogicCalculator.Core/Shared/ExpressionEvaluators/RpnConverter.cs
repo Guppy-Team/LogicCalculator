@@ -24,10 +24,12 @@ public class RpnConverter
                     break;
 
                 case TokenType.Operator:
+                case TokenType.LogicalOperator:
                     while (operatorStack.Count > 0 &&
                            (operatorStack.Peek().Type == TokenType.Operator ||
-                            operatorStack.Peek().Type == TokenType.Function) &&
-                           ((OperatorToken)token).Priority <= ((OperatorToken)operatorStack.Peek()).Priority)
+                            operatorStack.Peek().Type == TokenType.Function ||
+                            operatorStack.Peek().Type == TokenType.LogicalOperator) &&
+                           GetPriority(token) <= GetPriority(operatorStack.Peek()))
                     {
                         output.Add(operatorStack.Pop());
                     }
@@ -70,5 +72,15 @@ public class RpnConverter
         }
 
         return output;
+    }
+
+    private int GetPriority(IToken token)
+    {
+        return token switch
+        {
+            OperatorToken operatorToken => operatorToken.Priority,
+            LogicalOperatorToken logicalOperatorToken => logicalOperatorToken.Priority,
+            _ => 0
+        };
     }
 }

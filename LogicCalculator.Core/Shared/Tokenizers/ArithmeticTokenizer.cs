@@ -14,15 +14,13 @@ public class ArithmeticTokenizer : ITokenizer
         var tokens = new List<IToken>();
         var currentToken = string.Empty;
 
-        for (int i = 0; i < expression.Length; i++)
+        foreach (var currentChar in expression)
         {
-            var currentChar = expression[i];
-
             if (char.IsLetterOrDigit(currentChar) || currentChar == '_')
             {
                 currentToken += currentChar;
             }
-            else if (currentChar is '.')
+            else if (currentChar == '.')
             {
                 if (currentToken.Length > 0 && double.TryParse(currentToken + ".", out _))
                 {
