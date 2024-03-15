@@ -3,11 +3,11 @@ using LogicCalculator.Core.Shared.Tokens;
 
 namespace LogicCalculator.Core.LogicalExpression;
 
-public class LogicalExpressionEvaluator : IExpressionEvaluator
+public class LogicalExpressionEvaluator : ILogicalExpressionEvaluator
 {
-    public T Evaluate<T>(List<IToken> tokens, Dictionary<string, T> variables) where T : struct
+    public bool Evaluate(List<IToken> tokens, Dictionary<string, bool> variables)
     {
-        var stack = new Stack<T>();
+        var stack = new Stack<bool>();
         var operatorStack = new Stack<LogicalOperatorToken>();
 
         foreach (var token in tokens)
@@ -60,10 +60,10 @@ public class LogicalExpressionEvaluator : IExpressionEvaluator
             EvaluateOperator(stack, operatorStack.Pop());
         }
 
-        return stack.Count == 1 ? stack.Pop() : default;
+        return stack.Count == 1 && stack.Pop();
     }
 
-    private void EvaluateOperator<T>(Stack<T> stack, LogicalOperatorToken operatorToken) where T : struct
+    private void EvaluateOperator(Stack<bool> stack, LogicalOperatorToken operatorToken)
     {
         switch (operatorToken.Value)
         {
@@ -71,7 +71,7 @@ public class LogicalExpressionEvaluator : IExpressionEvaluator
                 if (stack.Count >= 1)
                 {
                     var operand = stack.Pop();
-                    stack.Push((T)(object)!(bool)(object)operand);
+                    stack.Push(!operand);
                 }
 
                 break;
@@ -83,16 +83,16 @@ public class LogicalExpressionEvaluator : IExpressionEvaluator
                     switch (operatorToken.Value)
                     {
                         case "&&":
-                            stack.Push((T)(object)((bool)(object)left && (bool)(object)right));
+                            stack.Push(left && right);
                             break;
                         case "||":
-                            stack.Push((T)(object)((bool)(object)left || (bool)(object)right));
+                            stack.Push(left || right);
                             break;
                         case "=>":
-                            stack.Push((T)(object)(!(bool)(object)left || (bool)(object)right));
+                            stack.Push(!left || right);
                             break;
                         case "<=>":
-                            stack.Push((T)(object)((bool)(object)left == (bool)(object)right));
+                            stack.Push(left == right);
                             break;
                     }
                 }

@@ -3,18 +3,23 @@ using LogicCalculator.Core.Shared.Tokens;
 
 namespace LogicCalculator.Core.Shared.ExpressionEvaluators;
 
-public class RpnEvaluator : IExpressionEvaluator
+public class RpnEvaluator : IArithmeticExpressionEvaluator
 {
-    public T Evaluate<T>(List<IToken> tokens, Dictionary<string, T> variables) where T : struct
+    public double Evaluate(List<IToken> tokens)
     {
-        var stack = new Stack<T>();
+        return Evaluate(tokens, new Dictionary<string, double>());
+    }
+
+    public double Evaluate(List<IToken> tokens, Dictionary<string, double> variables)
+    {
+        var stack = new Stack<double>();
 
         foreach (var token in tokens)
         {
             switch (token.Type)
             {
                 case TokenType.Number:
-                    stack.Push((T)(object)((NumberToken)token).NumericValue);
+                    stack.Push(((NumberToken)token).NumericValue);
                     break;
 
                 case TokenType.Variable:
@@ -24,7 +29,7 @@ public class RpnEvaluator : IExpressionEvaluator
                     }
                     else
                     {
-                        stack.Push(default(T));
+                        stack.Push(0);
                     }
 
                     break;
@@ -32,18 +37,18 @@ public class RpnEvaluator : IExpressionEvaluator
                 case TokenType.Operator:
                     var right = stack.Pop();
                     var left = stack.Pop();
-                    var result = (T)(object)token.Evaluate(new[] { (double)(object)left, (double)(object)right });
+                    var result = token.Evaluate(new[] { left, right });
                     stack.Push(result);
                     break;
 
                 case TokenType.Function:
                     var argument = stack.Pop();
-                    var functionResult = (T)(object)token.Evaluate(new[] { (double)(object)argument });
+                    var functionResult = token.Evaluate(new[] { argument });
                     stack.Push(functionResult);
                     break;
             }
         }
 
-        return stack.Count == 0 ? default(T) : stack.Pop();
+        return stack.Count == 0 ? 0 : stack.Pop();
     }
 }
