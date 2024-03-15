@@ -19,4 +19,23 @@ public class OperatorToken : IToken
     {
         Value = value;
     }
+
+    public double Evaluate(double[] args)
+    {
+        if (args.Length != 2)
+        {
+            throw new ArgumentException("Оператор принимает только 2 аргумента.");
+        }
+
+        return Value switch
+        {
+            "+" => args[0] + args[1],
+            "-" => args[0] - args[1],
+            "*" => args[0] * args[1],
+            "/" => args[0] / args[1],
+            "^" => Math.Pow(args[0], args[1]),
+
+            _ => throw new ArgumentException($"Неизвестный оператор: {Value}")
+        };
+    }
 }

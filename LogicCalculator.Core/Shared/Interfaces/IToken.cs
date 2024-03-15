@@ -7,4 +7,5 @@ public interface IToken
     TokenType Type { get; }
     string Value { get; }
     int Priority { get; }
+    double Evaluate(double[] args);
 }

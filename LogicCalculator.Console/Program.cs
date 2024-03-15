@@ -1,14 +1,28 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using LogicCalculator.Core.Shared.ExpressionEvaluators;
 using LogicCalculator.Core.Shared.Tokenizers;
 
 Console.WriteLine("Hello, World!");
 
-var expression = "2 + x * (3 - sin(y)) / num1 ^ 2";
+var expression = "sin(1/2) * 3 + 5 ^ num1 * 10";
 var tokenizer = new ArithmeticTokenizer();
 var tokens = tokenizer.Tokenize(expression);
 
-foreach (var token in tokens)
+var rpnConverter = new RpnConverter();
+var rpnTokens = rpnConverter.Convert(tokens);
+
+var variables = new Dictionary<string, double>
 {
-    Console.WriteLine($"Token: {token.Value}, Type: {token.Type}, Priority: {token.Priority}");
+    { "num1", 2 }
+};
+var rpnEvaluator = new RpnEvaluator();
+var rpnResult = rpnEvaluator.Evaluate(rpnTokens, variables);
+
+
+foreach (var token in rpnTokens)
+{
+    Console.WriteLine($"Token: {token.Value}, \tType: {token.Type}, \tPriority: {token.Priority}");
 }
+
+Console.WriteLine($"\nResult: {rpnResult}");

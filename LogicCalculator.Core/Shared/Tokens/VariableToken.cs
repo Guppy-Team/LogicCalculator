@@ -12,4 +12,9 @@ public class VariableToken : IToken
     {
         Value = value;
     }
+
+    public double Evaluate(double[] args)
+    {
+        return 0;
+    }
 }

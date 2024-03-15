@@ -12,45 +12,46 @@ public class ArithmeticTokenizer : ITokenizer
     public List<IToken> Tokenize(string expression)
     {
         var tokens = new List<IToken>();
-        var currentNumber = string.Empty;
-        var currentVariable = string.Empty;
+        var currentToken = string.Empty;
 
-        foreach (var currentChar in expression)
+        for (int i = 0; i < expression.Length; i++)
         {
+            var currentChar = expression[i];
+
             if (char.IsLetterOrDigit(currentChar) || currentChar == '_')
             {
-                if (currentNumber.Length > 0)
-                {
-                    tokens.Add(new NumberToken(currentNumber));
-                    currentNumber = string.Empty;
-                }
-
-                currentVariable += currentChar;
+                currentToken += currentChar;
             }
-            else if (currentChar == '.' && currentVariable.Length == 0)
+            else if (currentChar is '.')
             {
-                currentNumber += currentChar;
+                if (currentToken.Length > 0 && double.TryParse(currentToken + ".", out _))
+                {
+                    currentToken += currentChar;
+                }
+                else
+                {
+                    // Игнорировать некорректное размещение десятичной точки
+                    continue;
+                }
             }
             else
             {
-                if (currentVariable.Length > 0)
+                if (currentToken.Length > 0)
                 {
-                    if (_functions.Contains(currentVariable))
+                    if (double.TryParse(currentToken, out _))
                     {
-                        tokens.Add(new FunctionToken(currentVariable));
+                        tokens.Add(new NumberToken(currentToken));
+                    }
+                    else if (_functions.Contains(currentToken))
+                    {
+                        tokens.Add(new FunctionToken(currentToken));
                     }
                     else
                     {
-                        tokens.Add(new VariableToken(currentVariable));
+                        tokens.Add(new VariableToken(currentToken));
                     }
 
-                    currentVariable = string.Empty;
-                }
-
-                if (currentNumber.Length > 0)
-                {
-                    tokens.Add(new NumberToken(currentNumber));
-                    currentNumber = string.Empty;
+                    currentToken = string.Empty;
                 }
 
                 if (currentChar == '(')
@@ -68,21 +69,20 @@ public class ArithmeticTokenizer : ITokenizer
             }
         }
 
-        if (currentVariable.Length > 0)
+        if (currentToken.Length > 0)
         {
-            if (_functions.Contains(currentVariable))
+            if (double.TryParse(currentToken, out _))
             {
-                tokens.Add(new FunctionToken(currentVariable));
+                tokens.Add(new NumberToken(currentToken));
+            }
+            else if (_functions.Contains(currentToken))
+            {
+                tokens.Add(new FunctionToken(currentToken));
             }
             else
             {
-                tokens.Add(new VariableToken(currentVariable));
+                tokens.Add(new VariableToken(currentToken));
             }
-        }
-
-        if (currentNumber.Length > 0)
-        {
-            tokens.Add(new NumberToken(currentNumber));
         }
 
         return tokens;

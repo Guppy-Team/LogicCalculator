@@ -14,4 +14,9 @@ public class NumberToken : IToken
         Value = value;
         NumericValue = double.Parse(value);
     }
+
+    public double Evaluate(double[] args)
+    {
+        return 0;
+    }
 }

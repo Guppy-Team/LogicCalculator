@@ -13,4 +13,9 @@ public class BracketToken : IToken
         Value = value;
         Type = value == "(" ? TokenType.LeftBracket : TokenType.RightBracket;
     }
+
+    public double Evaluate(double[] args)
+    {
+        return 0;
+    }
 }
