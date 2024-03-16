@@ -1,0 +1,38 @@
+@import '../../scss/variables';
+
+.root {
+	padding: 0 10px;
+	background-color: $headerColor;
+}
+
+.wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 80px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.logo {
+	font-size: 24px;
+	font-weight: 700;
+	color: #fff;
+}
+
+.menu {
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.menuLink {
+	color: #fff;
+	text-decoration: none;
+	margin: 0 10px;
+}
+
+.menuLink:hover {
+	color: #ddd;
+}

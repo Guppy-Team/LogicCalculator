@@ -1,0 +1,34 @@
+@import '../../scss/variables';
+
+.root {
+	position: relative;
+	display: block;
+	padding: 15px;
+	background-color: rgb(224, 89, 89);
+	color: $lightTextColor;
+	border: 2px solid rgb(128, 55, 55);
+	border-radius: 7px;
+
+	span {
+		font-weight: 700;
+	}
+}
+
+.close {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	margin: 0;
+	top: 0;
+	right: 5px;
+	border: none;
+	background: unset;
+	color: #fff;
+	font-weight: 700;
+	font-family: monospace;
+	font-size: 18px;
+	cursor: pointer;
+}

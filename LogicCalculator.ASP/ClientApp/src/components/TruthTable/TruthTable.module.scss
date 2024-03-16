@@ -1,0 +1,40 @@
+@import '../../scss/variables';
+
+.root {
+	width: 100%;
+	background-color: #f6f4fb;
+	border-collapse: collapse;
+
+	border-radius: 7px;
+	overflow: hidden;
+
+	th,
+	td {
+		padding: 5px 15px;
+		text-align: left;
+		border: 1px solid #f6f4fb;
+	}
+
+	td:last-child {
+		width: 40%;
+	}
+
+	td:last-child,
+	th:last-child {
+		text-align: right;
+	}
+}
+
+.true {
+	color: $lightTextColor;
+	background-color: rgb(25, 177, 25);
+}
+
+.false {
+	color: $lightTextColor;
+	background-color: rgb(235, 72, 72);
+}
+
+.title {
+	margin-bottom: 10px;
+}

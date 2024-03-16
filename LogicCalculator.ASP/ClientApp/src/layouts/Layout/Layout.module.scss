@@ -1,0 +1,21 @@
+@import '../../scss/variables';
+
+.root {}
+
+.wrapper {
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	>main {
+		flex: 1 1 auto;
+	}
+}
+
+.container {
+	max-width: $containerWidth;
+	margin: 0 auto;
+	margin-top: 50px;
+	padding: 0 15px;
+	box-sizing: content-box;
+}

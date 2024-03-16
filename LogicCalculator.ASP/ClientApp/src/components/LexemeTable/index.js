@@ -1,0 +1,1 @@
+export { LexemeTable } from './LexemeTable';
