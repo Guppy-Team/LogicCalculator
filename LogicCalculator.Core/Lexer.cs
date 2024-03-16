@@ -1,98 +1,3 @@
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace LogicCalculator.Core;
-
-/// <summary>
-/// Предоставляет функциональные возможности для лексического анализа и оценки арифметических выражений.
-/// </summary>
-public static class Lexer
-{
-    private static Dictionary<string, int> OperatorPrecedences { get; } = new()
-    {
-        { "+", 1 },
-        { "-", 1 },
-        { "*", 2 },
-        { "/", 2 },
-        { "^", 3 },
-    };
-
-    private static Dictionary<string, Func<double, double>> Functions { get; } = new()
-    {
-        { "sin", Math.Sin },
-        { "cos", Math.Cos },
-        { "tan", Math.Tan },
-        { "tg", Math.Tan },
-        { "cot", x => 1.0 / Math.Tan(x) },
-        { "ctg", x => 1.0 / Math.Tan(x) }
-    };
-    private static Dictionary<string, double> Variables { get; } = new();
-
-    // Misha
-    /// <summary>
-    /// Разбивает исходное арифметическое выражение в инфиксной записи на лексемы.
-    /// </summary>
-    /// <param name="expression">Алгебраическое выражение.</param>
-    /// <returns>Список лексем.</returns>
-    public static List<Token> Tokenize(string expression)
-    {
-        Variables.Clear();
-        // Удаляем пробелы из входной строки
-        expression = expression.Replace(" ", "");
-
-        List<Token> tokens = new();
-
-        string numberPattern = @"\d+(\,\d+)?"; // Целые и действительные числа
-        string operatorPattern = GetOperatorPattern(); // Базовые арифметические операторы
-        string variablePattern = @"[a-zA-Z_]+[\w\d]*"; // Переменные (начинаются с буквы и могут содержать цифры и нижнее подчёркивание '_')
-        string functionPattern = @"[a-zA-Z]+\("; // Функция (буквы с последующей открывающейся скобкой)
-        string leftBracketPattern = @"\("; // Левая скобка
-        string rightBracketPattern = @"\)"; // Правая скобка
-
-        string pattern = $"({numberPattern})|({operatorPattern})|({variablePattern})|({functionPattern})|({leftBracketPattern})|({rightBracketPattern})";
-
-        Regex regex = new(pattern);
-        MatchCollection matches = regex.Matches(expression);
-
-        foreach (Match match in matches)
-        {
-            string value = match.Groups[0].Value;
-            TokenType type;
-
-            // Определяем тип лексемы
-            if (double.TryParse(value, out _))
-                type = TokenType.Number;
-            else if (IsOperator(value))
-                type = TokenType.Operator;
-            else if (IsFunction(value))
-                type = TokenType.Function;
-            else if (value == "(")
-                type = TokenType.LeftBracket;
-            else if (value == ")")
-                type = TokenType.RightBracket;
-            else if (IsVariable(value))
-                type = TokenType.Variable;
-            else
-                throw new ArgumentException($"Неверный символ в выражении: {value}");
-
-            int precedence = OperatorPrecedences.TryGetValue(value, out var operatorPrecedence) ? operatorPrecedence : 0;
-
-            if (type == TokenType.Variable)
-                Variables.TryAdd(value, 0);
-
-            tokens.Add(new Token(type, value, precedence));
-        }
-
-        return tokens;
-    }
-
-    private static string GetOperatorPattern()
-    {
-        StringBuilder sb = new();
-        sb.Append('[');
-
-        foreach (var op in OperatorPrecedences)
-            sb.Append($@"\{op.Key}");
 
         sb.Append(']');
 
@@ -100,11 +5,6 @@ public static class Lexer
     }
 
     // Pasha
-    /// <summary>
-    /// Конвертирует лексемы из инфиксного выражения в обратную польскую нотацию
-    /// </summary>
-    /// <param name="infixTokens">Список лексем из инфиксного выражения.</param>
-    /// <returns>Список лексем в порядке польской нотации.</returns>
     /// <summary>
     /// Конвертирует лексемы из инфиксного выражения в обратную польскую нотацию
     /// </summary>
@@ -126,9 +26,8 @@ public static class Lexer
 
                 case TokenType.Operator:
                 {
-                    while (stack.Count > 0
-                           && stack.Peek().Type == TokenType.Operator
-                           && OperatorPrecedences[stack.Peek().Value] >= OperatorPrecedences[token.Value])
+                    while (stack.Count > 0 && stack.Peek().Type == TokenType.Operator &&
+                           OperatorPrecedences[stack.Peek().Value] >= OperatorPrecedences[token.Value])
                     {
                         result.Add(stack.Pop());
                     }
@@ -138,9 +37,6 @@ public static class Lexer
                 }
 
                 case TokenType.Function:
-                    stack.Push(token);
-                    break;
-
                 case TokenType.LeftBracket:
                     stack.Push(token);
                     break;
@@ -153,20 +49,14 @@ public static class Lexer
                     }
 
                     stack.Pop();
-
-                    if (stack.Count > 0 && stack.Peek().Type == TokenType.Function)
-                    {
-                        result.Add(stack.Pop());
-                    }
-
                     break;
                 }
             }
         }
 
-        while (stack.Count > 0)
+        foreach (Token remainingToken in stack)
         {
-            result.Add(stack.Pop());
+            result.Add(remainingToken);
         }
 
         return result;
