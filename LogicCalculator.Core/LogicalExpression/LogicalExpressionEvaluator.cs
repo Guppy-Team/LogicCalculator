@@ -7,8 +7,8 @@ public class LogicalExpressionEvaluator : ILogicalExpressionEvaluator
 {
     public bool Evaluate(List<IToken> tokens, Dictionary<string, bool> variables)
     {
-        var stack = new Stack<bool>();
-        var operatorStack = new Stack<LogicalOperatorToken>();
+        var outputQueue = new Queue<IToken>();
+        var operatorStack = new Stack<IToken>();
 
         foreach (var token in tokens)
         {
@@ -17,37 +17,38 @@ public class LogicalExpressionEvaluator : ILogicalExpressionEvaluator
                 case VariableToken variableToken:
                     if (variables.TryGetValue(variableToken.Value, out var value))
                     {
-                        stack.Push(value);
+                        outputQueue.Enqueue(new BooleanToken(value));
+                    }
+                    else
+                    {
+                        outputQueue.Enqueue(new BooleanToken(false));
                     }
 
                     break;
                 case BracketToken bracketToken:
-                    switch (bracketToken.Value)
+                    if (bracketToken.Value == "(")
                     {
-                        case "(":
-                            operatorStack.Push(new LogicalOperatorToken("("));
-                            break;
-                        case ")":
+                        operatorStack.Push(bracketToken);
+                    }
+                    else
+                    {
+                        while (operatorStack.Count > 0 && operatorStack.Peek() is not BracketToken)
                         {
-                            while (operatorStack.Count > 0 && operatorStack.Peek().Value != "(")
-                            {
-                                EvaluateOperator(stack, operatorStack.Pop());
-                            }
+                            outputQueue.Enqueue(operatorStack.Pop());
+                        }
 
-                            if (operatorStack.Count > 0 && operatorStack.Peek().Value == "(")
-                            {
-                                operatorStack.Pop();
-                            }
-
-                            break;
+                        if (operatorStack.Count > 0 && operatorStack.Peek() is BracketToken)
+                        {
+                            operatorStack.Pop();
                         }
                     }
 
                     break;
                 case LogicalOperatorToken operatorToken:
-                    while (operatorStack.Count > 0 && operatorToken.Priority <= operatorStack.Peek().Priority)
+                    while (operatorStack.Count > 0 && operatorStack.Peek() is LogicalOperatorToken stackOperator &&
+                           operatorToken.Priority <= stackOperator.Priority)
                     {
-                        EvaluateOperator(stack, operatorStack.Pop());
+                        outputQueue.Enqueue(operatorStack.Pop());
                     }
 
                     operatorStack.Push(operatorToken);
@@ -57,7 +58,21 @@ public class LogicalExpressionEvaluator : ILogicalExpressionEvaluator
 
         while (operatorStack.Count > 0)
         {
-            EvaluateOperator(stack, operatorStack.Pop());
+            outputQueue.Enqueue(operatorStack.Pop());
+        }
+
+        var stack = new Stack<bool>();
+        foreach (var token in outputQueue)
+        {
+            switch (token)
+            {
+                case BooleanToken booleanToken:
+                    stack.Push(booleanToken.BooleanValue);
+                    break;
+                case LogicalOperatorToken operatorToken:
+                    EvaluateOperator(stack, operatorToken);
+                    break;
+            }
         }
 
         return stack.Count == 1 && stack.Pop();
