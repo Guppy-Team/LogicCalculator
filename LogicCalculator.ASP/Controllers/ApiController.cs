@@ -4,7 +4,6 @@ using LogicCalculator.ASP.Models.Responses;
 using LogicCalculator.Core.Shared.ExpressionEvaluators;
 using LogicCalculator.Core.Shared.Tokenizers;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Common;
 
 namespace LogicCalculator.ASP.Controllers
 {
