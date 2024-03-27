@@ -1,9 +1,10 @@
 using System.Text;
 using LogicCalculator.ASP.Models.Requests;
 using LogicCalculator.ASP.Models.Responses;
-using LogicCalculator.Core;
+using LogicCalculator.Core.Shared.ExpressionEvaluators;
+using LogicCalculator.Core.Shared.Tokenizers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
+using NuGet.Common;
 
 namespace LogicCalculator.ASP.Controllers
 {
@@ -25,8 +26,10 @@ namespace LogicCalculator.ASP.Controllers
         [HttpPost("ConvertToRpn")]
         public IActionResult ConvertToRpn([FromBody] BaseRequest request)
         {
-            var tokens = Lexer.Tokenize(request.Expression);
-            var rpnTokens = Lexer.ConvertToRpn(tokens);
+            var tokenizer = new ArithmeticTokenizer();
+            var rpnConverter = new RpnConverter();
+            var tokens = tokenizer.Tokenize(request.Expression);
+            var rpnTokens = rpnConverter.Convert(tokens);
 
             StringBuilder sb = new StringBuilder();
 
