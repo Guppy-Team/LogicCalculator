@@ -37,14 +37,16 @@ public class RpnEvaluator : IArithmeticExpressionEvaluator
                 case TokenType.Operator:
                     var right = stack.Pop();
                     var left = stack.Pop();
-                    var result = token.Evaluate(new[] { left, right });
-                    stack.Push(result);
+                    // TODO Token shouldn't have Evaluate
+                    //var result = token.Evaluate(new[] { left, right });
+                    //stack.Push(result);
                     break;
 
                 case TokenType.Function:
                     var argument = stack.Pop();
-                    var functionResult = token.Evaluate(new[] { argument });
-                    stack.Push(functionResult);
+                    // TODO Token shouldn't have Evaluate
+                    //var functionResult = token.Evaluate(new[] { argument });
+                    //stack.Push(functionResult);
                     break;
             }
         }
