@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using LogicCalculator.Core.Shared.Interfaces;
-using LogicCalculator.Core.Shared.Tokens;
 
 namespace LogicCalculator.Core.LogicalExpression;
 
@@ -12,13 +11,13 @@ public class Cnf
         var rows = truthTable.Generate(tokens);
 
         var variables = new List<string>();
-        foreach (var token in tokens)
-        {
-            if (token is VariableToken variableToken && !variables.Contains(variableToken.Value))
-            {
-                variables.Add(variableToken.Value);
-            }
-        }
+        // foreach (var token in tokens)
+        // {
+        //     if (token is VariableToken variableToken && !variables.Contains(variableToken.Value))
+        //     {
+        //         variables.Add(variableToken.Value);
+        //     }
+        // }
 
         var cnf = new StringBuilder();
         bool isFirstClause = true;
@@ -37,7 +36,7 @@ public class Cnf
                 cnf.Append(" && ");
             }
 
-            cnf.Append("(");
+            cnf.Append('(');
             bool isFirstLiteral = true;
 
             foreach (var variable in variables)
@@ -59,7 +58,7 @@ public class Cnf
                 isFirstLiteral = false;
             }
 
-            cnf.Append(")");
+            cnf.Append(')');
             isFirstClause = false;
         }
 

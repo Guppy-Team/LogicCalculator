@@ -1,5 +1,4 @@
 ﻿using LogicCalculator.Core.Shared.Interfaces;
-using LogicCalculator.Core.Shared.Tokens;
 
 namespace LogicCalculator.Core.LogicalExpression;
 
@@ -8,13 +7,13 @@ public class TruthTable
     public List<Dictionary<string, bool>> Generate(List<IToken> tokens)
     {
         var variables = new List<string>();
-        foreach (var token in tokens)
-        {
-            if (token is VariableToken variableToken && !variables.Contains(variableToken.Value))
-            {
-                variables.Add(variableToken.Value);
-            }
-        }
+        // foreach (var token in tokens)
+        // {
+        //     if (token is VariableToken variableToken && !variables.Contains(variableToken.Value))
+        //     {
+        //         variables.Add(variableToken.Value);
+        //     }
+        // }
 
         var rows = (int)Math.Pow(2, variables.Count);
         var table = new List<Dictionary<string, bool>>();
