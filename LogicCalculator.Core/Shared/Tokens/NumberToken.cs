@@ -4,19 +4,16 @@ namespace LogicCalculator.Core.Shared.Tokens;
 
 public class NumberToken : IToken
 {
-    public TokenType Type => TokenType.Number;
-    public string Value { get; }
-    public double NumericValue { get; }
-    public int Priority => 0;
-
+    public readonly TokenType Type = TokenType.Number;
+    public double Value { get; }
+    
     public NumberToken(string value)
     {
-        Value = value;
-        NumericValue = double.Parse(value);
-    }
+        if (!double.TryParse(value, out double numValue))
+        {
+            throw new ArgumentException("Value must be a valid numeric string.");
+        }
 
-    public double Evaluate(double[] args)
-    {
-        return 0;
+        Value = numValue;
     }
 }

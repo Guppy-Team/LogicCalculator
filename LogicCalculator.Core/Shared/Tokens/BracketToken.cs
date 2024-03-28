@@ -6,16 +6,9 @@ public class BracketToken : IToken
 {
     public TokenType Type { get; }
     public string Value { get; }
-    public int Priority => 0;
-
     public BracketToken(string value)
     {
         Value = value;
         Type = value == "(" ? TokenType.LeftBracket : TokenType.RightBracket;
-    }
-
-    public double Evaluate(double[] args)
-    {
-        return 0;
     }
 }
