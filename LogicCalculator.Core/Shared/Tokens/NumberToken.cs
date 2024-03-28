@@ -4,7 +4,6 @@ namespace LogicCalculator.Core.Shared.Tokens;
 
 public class NumberToken : IToken
 {
-    public readonly TokenType Type = TokenType.Number;
     public double Value { get; }
     
     public NumberToken(string value)
