@@ -44,15 +44,16 @@ public class LogicalExpressionEvaluator : ILogicalExpressionEvaluator
                     }
 
                     break;
-                case LogicalOperatorToken operatorToken:
-                    while (operatorStack.Count > 0 && operatorStack.Peek() is LogicalOperatorToken stackOperator &&
-                           operatorToken.Priority <= stackOperator.Priority)
-                    {
-                        outputQueue.Enqueue(operatorStack.Pop());
-                    }
-
-                    operatorStack.Push(operatorToken);
-                    break;
+                // TODO переделать под новую структуру
+                // case LogicalOperatorToken operatorToken:
+                //     while (operatorStack.Count > 0 && operatorStack.Peek() is LogicalOperatorToken stackOperator &&
+                //            operatorToken.Priority <= stackOperator.Priority)
+                //     {
+                //         outputQueue.Enqueue(operatorStack.Pop());
+                //     }
+                //
+                //     operatorStack.Push(operatorToken);
+                //     break;
             }
         }
 
