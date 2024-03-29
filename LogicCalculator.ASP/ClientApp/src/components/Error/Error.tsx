@@ -4,11 +4,15 @@ import { closeError } from '../../store/calculatorSlice';
 
 import styles from './Error.module.scss';
 
-export const Error = ({ message }) => {
+interface ErrorProps {
+  message: string;
+}
+
+export const Error: React.FC<ErrorProps> = ({ message }) => {
   const dispatch = useDispatch();
 
   const handleCloseError = () => {
-    dispatch(closeError(false));
+    dispatch(closeError());
   };
 
   return (

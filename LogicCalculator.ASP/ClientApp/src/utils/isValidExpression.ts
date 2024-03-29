@@ -1,4 +1,4 @@
-export const isValidExpression = (expression) => {
+export const isValidExpression = (expression: string) => {
   const operators = ['+', '-', '*', '/', '^'];
   const stack = [];
 

@@ -3,7 +3,17 @@ import React from 'react';
 
 import styles from './InputField.module.scss';
 
-export const InputField = ({
+interface InputFieldProps {
+  as?: 'input' | 'textarea';
+  className?: string;
+  type?: 'text' | 'number' | 'password' | 'email' | 'search';
+  value: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+export const InputField: React.FC<InputFieldProps> = ({
   as = 'input',
   className,
   type = 'text',
@@ -12,8 +22,8 @@ export const InputField = ({
   disabled,
   ...props
 }) => {
-  const handleChange = (event) => {
-    onChange(event.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    onChange?.(event);
   };
 
   const combinedClassName = clsx(styles.root, className);

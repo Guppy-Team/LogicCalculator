@@ -1,11 +1,10 @@
 import React from 'react';
 
-import styles from './AboutPage.module.scss';
 import { Title } from '../../components/Title';
 
-export const AboutPage = () => {
+export const AboutPage: React.FC = () => {
   return (
-    <div className={styles.root}>
+    <div>
       <Title>О проекте</Title>
     </div>
   );

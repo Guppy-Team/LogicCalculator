@@ -3,33 +3,46 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { convertToRpn } from '../../store/calculatorAction';
 import {
-  showError,
-  setExpression,
   closeError,
+  setExpression,
+  showError,
 } from '../../store/calculatorSlice';
-
-import { Title } from '../../components/Title';
-import { Button } from '../../components/Button';
-import { InputField } from '../../components/InputField';
-import { LexemeTable } from '../../components/LexemeTable';
-import { TruthTable } from '../../components/TruthTable';
-import { TreeGraph } from '../../components/TreeGraph';
-import { Error } from '../../components/Error';
-
-import styles from './Home.module.scss';
+import { AppDispatch, RootState } from '../../store/store';
 import { isValidExpression } from '../../utils/isValidExpression';
 
-export const Home = () => {
-  const dispatch = useDispatch();
-  const { result, error } = useSelector((state) => state.calculator);
+import { Button } from '../../components/Button';
+import { Error } from '../../components/Error';
+import { InputField } from '../../components/InputField';
+import { LexemeTable } from '../../components/LexemeTable';
+import { Title } from '../../components/Title';
+import { TreeGraph } from '../../components/TreeGraph';
+import { TruthTable } from '../../components/TruthTable';
 
-  const [expressionValue, setExpressionValue] = useState('');
-  const [variablesValue, setVariablesValue] = useState('');
+import styles from './Home.module.scss';
 
-  const [showVariables, setShowVariables] = useState(false);
-  const [showTruthTable, setShowTruthTable] = useState(false);
-  const [showLexemeTable, setShowLexemeTable] = useState(false);
-  const [showTreeGraph, setShowTreeGraph] = useState(false);
+export const Home: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const { result, error } = useSelector((state: RootState) => state.calculator);
+
+  const [expressionValue, setExpressionValue] = useState<string>('');
+  const [variablesValue, setVariablesValue] = useState<string>('');
+
+  const [showVariables, setShowVariables] = useState<boolean>(false);
+  const [showTruthTable, setShowTruthTable] = useState<boolean>(false);
+  const [showLexemeTable, setShowLexemeTable] = useState<boolean>(false);
+  const [showTreeGraph, setShowTreeGraph] = useState<boolean>(false);
+
+  const handleExpressionChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setExpressionValue(event.target.value);
+  };
+
+  const handleVariablesChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setVariablesValue(event.target.value);
+  };
 
   const handleToggleVariables = () => {
     setShowVariables(!showVariables);
@@ -105,7 +118,7 @@ export const Home = () => {
             placeholder="Введите выражение"
             className={styles.input}
             value={expressionValue}
-            onChange={setExpressionValue}
+            onChange={handleExpressionChange}
           />
 
           <div className={styles.buttonGroup}>
@@ -155,7 +168,7 @@ export const Home = () => {
                 value={variablesValue}
                 placeholder="a = 12; b = -2; c = 55;"
                 className={styles.input}
-                onChange={setVariablesValue}
+                onChange={handleVariablesChange}
               />
             </section>
           )}

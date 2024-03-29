@@ -1,20 +1,32 @@
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import styles from './TruthTable.module.scss';
 import { Loading } from '../Loading';
 
-export const TruthTable = ({ className }) => {
-  const [loading, setLoading] = useState(true);
-  const [variables, setVariables] = useState([]);
-  const [values, setValues] = useState([]);
-  const [expression, setExpression] = useState('');
+import styles from './TruthTable.module.scss';
+
+interface TruthTableProps {
+  className?: string;
+}
+
+interface TruthTableValue {
+  a: boolean;
+  b: boolean;
+  c: boolean;
+  result: boolean;
+}
+
+export const TruthTable: React.FC<TruthTableProps> = ({ className }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [variables, setVariables] = useState<string[]>([]);
+  const [values, setValues] = useState<TruthTableValue[]>([]);
+  const [expression, setExpression] = useState<string>('');
 
   const generateTruthTable = () => {
     // TODO: переделать генерацию таблицы
     // Логика для генерации таблицы истинности на основе выражения и переменных
     // Возвращает массив строк таблицы истинности
-    const truthTableRows = [];
+    const truthTableRows: React.ReactNode[] = [];
 
     values.forEach((value) => {
       const row = (
