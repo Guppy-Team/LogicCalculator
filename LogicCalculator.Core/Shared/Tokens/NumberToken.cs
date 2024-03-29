@@ -6,13 +6,8 @@ public class NumberToken : IToken
 {
     public double Value { get; }
     
-    public NumberToken(string value)
+    public NumberToken(double value)
     {
-        if (!double.TryParse(value, out double numValue))
-        {
-            throw new ArgumentException("Value must be a valid numeric string.");
-        }
-
-        Value = numValue;
+        Value = value;
     }
 }
