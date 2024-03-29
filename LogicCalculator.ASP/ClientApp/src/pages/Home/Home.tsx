@@ -19,6 +19,7 @@ import { TreeGraph } from '../../components/TreeGraph';
 import { TruthTable } from '../../components/TruthTable';
 
 import styles from './Home.module.scss';
+import { Text } from '@mantine/core';
 
 export const Home: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -104,12 +105,12 @@ export const Home: React.FC = () => {
   return (
     <>
       <Title>Интерпретация арифмитических выражений</Title>
-      <p className={styles.subtitle}>
+      <Text className={styles.subtitle}>
         Арифметические выражения, содержащие имена переменных, константы,
         <br />
         соединённые знаками бинарных операций <span>(+, -, *, /)</span> и
         скобками
-      </p>
+      </Text>
 
       <div className={styles.columnsWrapper}>
         <section className={styles.inputWrapper}>
