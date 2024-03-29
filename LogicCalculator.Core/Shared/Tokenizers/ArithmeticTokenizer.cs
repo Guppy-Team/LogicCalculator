@@ -1,9 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using LogicCalculator.Core.Shared.Interfaces;
-using LogicCalculator.Core.Shared.Tokens;
+﻿using LogicCalculator.Core.Shared.Interfaces;
 
 namespace LogicCalculator.Core.Shared.Tokenizers;
 
+// TODO Переделать под новую структуру 
 public class ArithmeticTokenizer : ITokenizer
 {
     private readonly string[] _operators = { "+", "-", "*", "/", "^" };
@@ -26,60 +25,6 @@ public class ArithmeticTokenizer : ITokenizer
                 {
                     currentToken += currentChar;
                 }
-                else
-                {
-                    // Игнорировать некорректное размещение десятичной точки
-                    continue;
-                }
-            }
-            else
-            {
-                if (currentToken.Length > 0)
-                {
-                    if (double.TryParse(currentToken, out _))
-                    {
-                        tokens.Add(new NumberToken(currentToken));
-                    }
-                    else if (_functions.Contains(currentToken))
-                    {
-                        tokens.Add(new FunctionToken(currentToken));
-                    }
-                    else
-                    {
-                        tokens.Add(new VariableToken(currentToken));
-                    }
-
-                    currentToken = string.Empty;
-                }
-
-                if (currentChar == '(')
-                {
-                    tokens.Add(new BracketToken("("));
-                }
-                else if (currentChar == ')')
-                {
-                    tokens.Add(new BracketToken(")"));
-                }
-                else if (_operators.Contains(currentChar.ToString()))
-                {
-                    tokens.Add(new OperatorToken(currentChar.ToString()));
-                }
-            }
-        }
-
-        if (currentToken.Length > 0)
-        {
-            if (double.TryParse(currentToken, out _))
-            {
-                tokens.Add(new NumberToken(currentToken));
-            }
-            else if (_functions.Contains(currentToken))
-            {
-                tokens.Add(new FunctionToken(currentToken));
-            }
-            else
-            {
-                tokens.Add(new VariableToken(currentToken));
             }
         }
 
