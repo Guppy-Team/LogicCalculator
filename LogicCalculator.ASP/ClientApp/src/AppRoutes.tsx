@@ -1,7 +1,15 @@
+import React, { ReactElement } from 'react';
+
 import { Home } from './pages/Home';
 import { AboutPage } from './pages/AboutPage';
 
-const AppRoutes = [
+interface Route {
+  index?: boolean;
+  path?: string;
+  element: ReactElement;
+}
+
+const AppRoutes: Route[] = [
   {
     index: true,
     element: <Home />,

@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './Header.module.scss';
 import { Link } from 'react-router-dom';
 
-export const Header = () => {
+export const Header: React.FC = () => {
   return (
     <header className={styles.root}>
       <div className={styles.wrapper}>

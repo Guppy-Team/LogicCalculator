@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import Tree from 'react-d3-tree';
-import { useSelector } from 'react-redux';
+import Tree, { TreeNodeDatum } from 'react-d3-tree';
+import { useSelector, TypedUseSelectorHook } from 'react-redux';
 import { convertToRpn } from '../../api/convertToRpn';
 import { rpnToTreeData } from '../../utils/rpnToTreeData';
 
@@ -9,18 +9,35 @@ import { Loading } from '../Loading';
 
 import styles from './TreeGraph.module.scss';
 
-export const TreeGraph = ({ className }) => {
-  const [loading, setLoading] = useState(true);
-  const { expression } = useSelector((state) => state.calculator);
+interface TreeGraphProps {
+  className?: string;
+}
 
-  const [treeData, setTreeData] = useState({});
+interface ReduxState {
+  calculator: {
+    expression: string;
+  };
+}
+
+const useTypedSelector: TypedUseSelectorHook<ReduxState> = useSelector;
+
+export const TreeGraph: React.FC<TreeGraphProps> = ({ className }) => {
+  const [loading, setLoading] = useState(true);
+  const { expression } = useTypedSelector((state) => state.calculator);
+
+  const [treeData, setTreeData] = useState<TreeNodeDatum[]>([]);
 
   useEffect(() => {
     const fetchTreeData = async () => {
       try {
-        const rpn = await convertToRpn(expression);
-        setTreeData(rpnToTreeData(rpn));
-        setLoading(false);
+        const response = await convertToRpn(expression);
+        if (response.error) {
+          console.log(response.error);
+          setLoading(false);
+        } else {
+          setTreeData([rpnToTreeData(response.result!)]);
+          setLoading(false);
+        }
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -56,7 +73,17 @@ export const TreeGraph = ({ className }) => {
   );
 };
 
-const CustomNodeLabel = ({ nodeDatum, toggleNode }) => {
+interface CustomNodeLabelProps {
+  nodeDatum: {
+    name: string;
+  };
+  toggleNode: () => void;
+}
+
+const CustomNodeLabel: React.FC<CustomNodeLabelProps> = ({
+  nodeDatum,
+  toggleNode,
+}) => {
   return (
     <g>
       <circle r="24" fill="steelblue" onClick={toggleNode} />

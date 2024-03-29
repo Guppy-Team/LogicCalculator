@@ -1,7 +1,5 @@
 @import '../../scss/variables';
 
-.root {}
-
 .subtitle {
 	margin-top: 10px;
 	margin-bottom: 30px;
@@ -55,4 +53,24 @@
 	resize: none;
 	color: $textColor;
 	cursor: text;
+}
+
+.inputWrapper {
+	width: auto;
+}
+
+.variablesWrapper {
+	width: auto;
+}
+
+.resultWrapper {
+	width: auto;
+}
+
+.truthTableWrapper {
+	width: auto;
+}
+
+.treeGraphWrapper {
+	width: auto;
 }

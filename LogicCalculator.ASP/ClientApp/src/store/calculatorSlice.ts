@@ -1,19 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { convertToRpn } from './calculatorAction';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { convertToRpn, ConvertToRpnResponse } from './calculatorAction';
+
+interface CalculatorState {
+  expression: string;
+  result: string;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: CalculatorState = {
+  expression: '',
+  result: '',
+  loading: true,
+  error: null,
+};
 
 const calculatorSlice = createSlice({
   name: 'calculator',
-  initialState: {
-    expression: '',
-    result: '',
-    loading: true,
-    error: null,
-  },
+  initialState,
   reducers: {
-    setExpression: (state, action) => {
+    setExpression: (state, action: PayloadAction<string>) => {
       state.expression = action.payload;
     },
-    showError: (state, action) => {
+    showError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
     closeError: (state) => {
@@ -26,18 +35,18 @@ const calculatorSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(convertToRpn.fulfilled, (state, action) => {
+      .addCase(convertToRpn.fulfilled, (state, action: PayloadAction<ConvertToRpnResponse>) => {
         if (action.payload.error) {
           state.error = action.payload.error;
         } else {
           state.expression = action.payload.expression;
-          state.result = action.payload;
+          state.result = action.payload.result;
           state.error = null;
         }
         state.loading = false;
       })
       .addCase(convertToRpn.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.error.message || 'An error occurred.';
         state.loading = false;
       });
   },

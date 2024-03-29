@@ -1,9 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+
 import AppRoutes from './AppRoutes';
 import { Layout } from './layouts/Layout';
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <Layout>
       <Routes>
