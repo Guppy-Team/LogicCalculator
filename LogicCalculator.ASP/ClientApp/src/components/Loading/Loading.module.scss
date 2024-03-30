@@ -1,4 +1,4 @@
-@import '../../scss/variables';
+
 
 .root {
 	display: flex;
@@ -12,7 +12,7 @@
 	height: 40px;
 	border-radius: 50%;
 	border: 5px solid #f6f4fb;
-	border-top: 5px solid $mainColor;
+	border-top: 5px solid var(--mantine-color-blue-9);
 	animation: spin 1.5s linear infinite;
 }
 

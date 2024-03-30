@@ -1,38 +1,23 @@
+import { createTheme, MantineProvider, rem } from '@mantine/core';
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import {
-  MantineProvider,
-  MantineColorsTuple,
-  createTheme,
-} from '@mantine/core';
 
 import store from './store/store';
 
 import '@mantine/core/styles.css';
 
-// import './scss/main.scss';
-
 import App from './App';
 
-const myColor: MantineColorsTuple = [
-  '#f1f3f8',
-  '#e0e2ea',
-  '#bfc2d6',
-  '#9ba1c2',
-  '#7d84b2',
-  '#6972a9',
-  '#5f69a5',
-  '#505990',
-  '#454f82',
-  '#3a4474',
-];
-
 const theme = createTheme({
-  fontFamily: "Inter, sans-serif",
-  colors: {
-    myColor,
+  fontFamily: 'Inter, sans-serif',
+  fontSizes: {
+    xs: rem(12),
+    sm: rem(16),
+    md: rem(18),
+    lg: rem(20),
+    xl: rem(24),
   },
 });
 
@@ -46,7 +31,7 @@ root.render(
   <StrictMode>
     <BrowserRouter basename={baseUrl}>
       <Provider store={store}>
-        <MantineProvider defaultColorScheme='dark' theme={theme}>
+        <MantineProvider defaultColorScheme="light" theme={theme}>
           <App />
         </MantineProvider>
       </Provider>

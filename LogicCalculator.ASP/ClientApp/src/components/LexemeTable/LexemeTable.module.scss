@@ -1,11 +1,11 @@
-@import '../../scss/variables';
+
 
 .root {
 	width: 100%;
 	background-color: #f6f4fb;
 	border-collapse: collapse;
 
-	border: 2px solid $strokeColor;
+	border: 2px solid var(--mantine-color-blue-9);
 	border-radius: 7px;
 	overflow: hidden;
 
