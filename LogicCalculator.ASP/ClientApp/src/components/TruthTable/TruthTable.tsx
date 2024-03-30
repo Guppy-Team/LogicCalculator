@@ -1,7 +1,6 @@
+import { Loader } from '@mantine/core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-
-import { Loading } from '../Loading';
 
 import styles from './TruthTable.module.scss';
 
@@ -92,5 +91,5 @@ export const TruthTable: React.FC<TruthTableProps> = ({ className }) => {
     </section>
   );
 
-  return loading ? <Loading /> : table;
+  return loading ? <Loader /> : table;
 };

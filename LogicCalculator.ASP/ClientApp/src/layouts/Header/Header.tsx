@@ -1,22 +1,31 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Container, Group } from '@mantine/core';
 
 import styles from './Header.module.scss';
-import { Link } from 'react-router-dom';
+
+const links = [{ link: '/about', label: 'О проекте' }];
 
 export const Header: React.FC = () => {
-  return (
-    <header className={styles.root}>
-      <div className={styles.wrapper}>
-        <Link to="/" className={styles.logo}>
-          Team Guppy
-        </Link>
+  const items = links.map((link) => {
+    return (
+      <Link key={link.label} to={link.link} className={styles.link}>
+        {link.label}
+      </Link>
+    );
+  });
 
-        <nav className={styles.menu}>
-          <Link to="/about" className={styles.menuLink}>
-            О проекте
+  return (
+    <header className={styles.header}>
+      <Container size="md">
+        <div className={styles.inner}>
+          <Link to="/" className={styles.logo}>
+            Team Guppy
           </Link>
-        </nav>
-      </div>
+
+          <Group gap={5}>{items}</Group>
+        </div>
+      </Container>
     </header>
   );
 };

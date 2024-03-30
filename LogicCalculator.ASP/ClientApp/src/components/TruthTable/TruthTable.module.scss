@@ -1,4 +1,4 @@
-@import '../../scss/variables';
+
 
 .root {
 	width: 100%;
@@ -26,12 +26,10 @@
 }
 
 .true {
-	color: $lightTextColor;
 	background-color: rgb(25, 177, 25);
 }
 
 .false {
-	color: $lightTextColor;
 	background-color: rgb(235, 72, 72);
 }
 

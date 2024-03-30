@@ -1,7 +1,6 @@
+import { Loader } from '@mantine/core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-
-import { Loading } from '../Loading';
 
 import styles from './LexemeTable.module.scss';
 
@@ -58,5 +57,5 @@ export const LexemeTable: React.FC<LexemeTableProps> = ({ className }) => {
     </table>
   );
 
-  return loading ? <Loading /> : table;
+  return loading ? <Loader /> : table;
 };

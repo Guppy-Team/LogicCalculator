@@ -1,6 +1,5 @@
+import { Title } from '@mantine/core';
 import React from 'react';
-
-import { Title } from '../../components/Title';
 
 export const AboutPage: React.FC = () => {
   return (
