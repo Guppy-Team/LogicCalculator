@@ -7,13 +7,13 @@ namespace LogicCalculator.Core.Shared.Tokenizers;
 // TODO Переделать под новую структуру 
 public class ArithmeticTokenizer : ITokenizer
 {
-    private readonly Func<string, int>[] _rules;
+    private readonly Func<string, (IToken token, int size)>[] _rules;
 
     /// <summary>
     /// Конструктор токенизатора, принимающий массив правил для разбора выражения.
     /// </summary>
     /// <param name="rules">Массив правил для разбора выражения.</param>
-    public ArithmeticTokenizer(Func<string, int>[] rules)
+    public ArithmeticTokenizer(Func<string, (IToken token, int size)>[] rules)
     {
         _rules = rules;
     }
@@ -32,11 +32,11 @@ public class ArithmeticTokenizer : ITokenizer
 
             foreach (var rule in _rules)
             {
-                var size = rule(expression);
+                var (token, size) = rule(expression);
                 if (size > 0)
                 {
                     // Создание токена и добавление его в список токенов
-                    tokens.Add(CreateToken(expression.Substring(0, size)));
+                    tokens.Add(token);
                     // Удаление обработанной части выражения
                     expression = expression.Substring(size);
                     ruleApplied = true; // Правило было применено
@@ -48,11 +48,6 @@ public class ArithmeticTokenizer : ITokenizer
                     ruleApplied = true;
                     break;
                 }
-                else if (size == 0)
-                {
-                    // Пропуск правила, если его размер равен 0
-                    continue;
-                }
             }
 
             // Если ни одно правило не было применено, значит, мы столкнулись с неизвестным символом
@@ -63,40 +58,5 @@ public class ArithmeticTokenizer : ITokenizer
         }
 
         return tokens;
-    }
-
-    /// <summary>
-    /// Создает токен на основе значения.
-    /// </summary>
-    /// <param name="tokenValue">Значение токена.</param>
-    /// <returns>Токен, созданный на основе значения.</returns>
-    private IToken CreateToken(string tokenValue)
-    {
-        switch (tokenValue)
-        {
-            case "+":
-                return new PlusToken();
-            case "-":
-                return new MinusToken();
-            case "*":
-                return new MultiplyToken();
-            case "/":
-                return new DivideToken();
-            case "(":
-                return new LeftBracketToken();
-            case ")":
-                return new RightBracketToken();
-            default:
-                if (double.TryParse(tokenValue, out double number))
-                {
-                    // Создание токена числа
-                    return new NumberToken(number);
-                }
-                else
-                {
-                    // Если значение не соответствует ни одному известному токену, генерируется исключение
-                    throw new ArgumentException($"Unknown token: {tokenValue}");
-                }
-        }
     }
 }
