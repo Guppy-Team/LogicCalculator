@@ -1,11 +1,10 @@
+import { Loader } from '@mantine/core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import Tree, { TreeNodeDatum } from 'react-d3-tree';
 import { useSelector, TypedUseSelectorHook } from 'react-redux';
 import { convertToRpn } from '../../api/convertToRpn';
 import { rpnToTreeData } from '../../utils/rpnToTreeData';
-
-import { Loading } from '../Loading';
 
 import styles from './TreeGraph.module.scss';
 
@@ -48,7 +47,7 @@ export const TreeGraph: React.FC<TreeGraphProps> = ({ className }) => {
   }, [expression]);
 
   return loading ? (
-    <Loading />
+    <Loader />
   ) : (
     <section className={clsx(styles.root, className)}>
       <h2 className={styles.title}>Дерево лексем</h2>

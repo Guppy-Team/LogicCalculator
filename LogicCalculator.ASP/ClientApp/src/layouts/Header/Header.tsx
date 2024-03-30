@@ -1,12 +1,12 @@
-import { Container, Group } from '@mantine/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Container, Group } from '@mantine/core';
 
 import styles from './Header.module.scss';
 
 const links = [{ link: '/about', label: 'О проекте' }];
 
-export function Header() {
+export const Header: React.FC = () => {
   const items = links.map((link) => {
     return (
       <Link key={link.label} to={link.link} className={styles.link}>
@@ -28,4 +28,4 @@ export function Header() {
       </Container>
     </header>
   );
-}
+};

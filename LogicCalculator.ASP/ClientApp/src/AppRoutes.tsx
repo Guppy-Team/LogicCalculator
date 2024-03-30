@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 
-import { Home } from './pages/Home';
+import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 
 interface Route {
@@ -12,7 +12,7 @@ interface Route {
 const AppRoutes: Route[] = [
   {
     index: true,
-    element: <Home />,
+    element: <HomePage />,
   },
   {
     path: '/about',
