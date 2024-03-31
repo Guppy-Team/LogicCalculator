@@ -2,5 +2,5 @@
 
 public class TokenizeResponse
 {
-    public List<TokenResult> Result { get; set; } = [];
+    public List<TokenResult> Result { get; set; } = new List<TokenResult>();
 }
