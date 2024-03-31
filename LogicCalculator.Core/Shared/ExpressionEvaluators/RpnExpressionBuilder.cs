@@ -5,14 +5,13 @@ namespace LogicCalculator.Core.Shared.ExpressionEvaluators;
 
 public class RpnExpressionBuilder
 {
-    private static Dictionary<IToken, int> Priorities { get; set; } = new Dictionary<IToken, int>
+    private static Dictionary<IToken, int> OperatorPriorities { get; set; } = new Dictionary<IToken, int>
     {
-        { new PlusToken(), 4 },
-        { new MinusToken(), 4 },
+        { new PlusToken(), 2 },
+        { new MinusToken(), 2 },
         { new MultiplyToken(), 3 },
         { new DivideToken(), 3 },
     };
-
 
     public static IExpression Build(IEnumerable<IToken> expression)
     {
@@ -33,8 +32,6 @@ public class RpnExpressionBuilder
                     while (operatorStack.Count > 0 &&
                            (operatorStack.Peek() is IOperator ||
                             operatorStack.Peek() is IBooleanOperator) &&
-                           
-                           //! Huh...
                            GetPriority(token) <= GetPriority(operatorStack.Peek()))
                     {
                         output.Add(operatorStack.Pop());
@@ -78,6 +75,6 @@ public class RpnExpressionBuilder
 
     private static int GetPriority(IToken token)
     {
-        return Priorities[token];
+        return OperatorPriorities[token];
     }
 }

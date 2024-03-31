@@ -2,6 +2,6 @@
 
 namespace LogicCalculator.Core.Shared.Tokens;
 
-public class MultiplyToken : IToken
+public class MultiplyToken : IToken, IOperator
 {
 }
