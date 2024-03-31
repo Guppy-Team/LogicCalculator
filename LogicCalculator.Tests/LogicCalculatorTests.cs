@@ -145,8 +145,8 @@ public class Tests
             // Arrange
             ITokenizer tokenizer = new Tokenizer(TokenizerTestRules.DefaultRules);
 
-            // Выражение содержит неизвестный токен "="
-            string expression = "(3 + 4) = 5";
+            // Выражение содержит неизвестный токен "!"
+            string expression = "2 + 3 ! 5";
 
             // Act & Assert
             Assert.Throws<ArgumentException>(() => tokenizer.Tokenize(expression));
