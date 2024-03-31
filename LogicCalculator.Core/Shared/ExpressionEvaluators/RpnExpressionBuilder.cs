@@ -28,10 +28,8 @@ public class RpnExpressionBuilder
                     break;
                 
                 case IOperator:
-                case IBooleanOperator:
                     while (operatorStack.Count > 0 &&
-                           (operatorStack.Peek() is IOperator ||
-                            operatorStack.Peek() is IBooleanOperator) &&
+                           (operatorStack.Peek() is IOperator) &&
                            GetPriority(token) <= GetPriority(operatorStack.Peek()))
                     {
                         output.Add(operatorStack.Pop());
