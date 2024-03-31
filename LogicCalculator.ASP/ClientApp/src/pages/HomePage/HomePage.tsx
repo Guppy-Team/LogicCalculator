@@ -35,7 +35,7 @@ export const HomePage: React.FC = () => {
   return (
     <>
       <Title order={1} mb={10}>
-        Интерпретация арифмитических выражений
+        Интерпретация арифметических выражений
       </Title>
       <Text className={styles.description} mb={10}>
         Арифметические выражения, содержащие имена переменных, константы,
