@@ -17,68 +17,161 @@ public class Tests
         Assert.Pass();
     }
 
-    /// <summary>
-    /// Проверяет, что правильно токенизируется арифметическое выражение.
-    /// </summary>
-    [Test]
-    public void ArithmeticTokenizer_Test_01()
+    [TestFixture]
+    public class TokenizerTests
     {
-        // Arrange
-        var tokenizer = new ArithmeticTokenizer(new Func<string, (IToken, int)>[]
+        [Test]
+        public void TokenizeTest01()
         {
-                x => x.StartsWith("+") ? ((IToken)new PlusToken(), 1) : (new NumberToken(0), 0),
-                x => x.StartsWith("-") ? ((IToken)new MinusToken(), 1) : (new NumberToken(0), 0),
-                x => double.TryParse(x, out double number) ? ((IToken)new NumberToken(number), x.Length) : (new NumberToken(0), 0),
-        });
+            // Arrange
+            ITokenizer tokenizer = new Tokenizer(TokenizerTestRules.DefaultRules);
 
-        // Act
-        var tokens = tokenizer.Tokenize("1 + 2 - 3.5");
+            // Выражение для тестирования
+            string expression = "( 3 + 4 ) * 10";
 
-        // Assert
-        Assert.That(tokens.Count, Is.EqualTo(5));
-        Assert.That(tokens[0], Is.InstanceOf<NumberToken>());
-        Assert.That(tokens[1], Is.InstanceOf<PlusToken>());
-        Assert.That(tokens[2], Is.InstanceOf<NumberToken>());
-        Assert.That(tokens[3], Is.InstanceOf<MinusToken>());
-        Assert.That(tokens[4], Is.InstanceOf<NumberToken>());
+            // Ожидаемые токены
+            var expectedTokens = new List<IToken>
+            {
+                new LeftBracketToken(),
+                new NumberToken(3),
+                new PlusToken(),
+                new NumberToken(4),
+                new RightBracketToken(),
+                new MultiplyToken(),
+                new NumberToken(10)
+            };
+
+            // Act
+            var actualTokens = tokenizer.Tokenize(expression);
+
+            // Assert
+            Assert.That(actualTokens.Count, Is.EqualTo(expectedTokens.Count));
+
+            for (int i = 0; i < expectedTokens.Count; i++)
+            {
+                Assert.IsInstanceOf(expectedTokens[i].GetType(), actualTokens[i]);
+                // Дополнительные утверждения могут быть добавлены для проверки свойств токенов, если необходимо
+            }
+        }
+
+        [Test]
+        public void TokenizeTest02()
+        {
+            // Arrange
+            ITokenizer tokenizer = new Tokenizer(TokenizerTestRules.DefaultRules);
+
+            // Выражение для тестирования
+            string expression = "10/5 + 1";
+
+            // Ожидаемые токены
+            var expectedTokens = new List<IToken>
+            {
+                new NumberToken(10),
+                new DivideToken(),
+                new NumberToken(5),
+                new PlusToken(),
+                new NumberToken(1),
+            };
+
+            // Act
+            var actualTokens = tokenizer.Tokenize(expression);
+
+            // Assert
+            Assert.That(actualTokens.Count, Is.EqualTo(expectedTokens.Count));
+
+            for (int i = 0; i < expectedTokens.Count; i++)
+            {
+                Assert.IsInstanceOf(expectedTokens[i].GetType(), actualTokens[i]);
+                // Дополнительные утверждения могут быть добавлены для проверки свойств токенов, если необходимо
+            }
+        }
+
+        [Test]
+        public void TokenizeTest03()
+        {
+            // Arrange
+            ITokenizer tokenizer = new Tokenizer(TokenizerTestRules.DefaultRules);
+
+            // Выражение для тестирования
+            string expression = "(2 * 2) / (1 + 3 - 2)";
+
+            // Ожидаемые токены
+            var expectedTokens = new List<IToken>
+            {
+                new LeftBracketToken(),
+                new NumberToken(2),
+                new MultiplyToken(),
+                new NumberToken(2),
+                new RightBracketToken(),
+                new DivideToken(),
+                new LeftBracketToken(),
+                new NumberToken(1),
+                new PlusToken(),
+                new NumberToken(3),
+                new MinusToken(),
+                new NumberToken(4),
+                new RightBracketToken(),
+            };
+
+            // Act
+            var actualTokens = tokenizer.Tokenize(expression);
+
+            // Assert
+            Assert.That(actualTokens.Count, Is.EqualTo(expectedTokens.Count));
+
+            for (int i = 0; i < expectedTokens.Count; i++)
+            {
+                Assert.IsInstanceOf(expectedTokens[i].GetType(), actualTokens[i]);
+                // Дополнительные утверждения могут быть добавлены для проверки свойств токенов, если необходимо
+            }
+        }
+
+        [Test]
+        public void TokenizeTest04()
+        {
+            // Arrange
+            ITokenizer tokenizer = new Tokenizer(TokenizerTestRules.DefaultRules);
+
+            // Выражение содержит неизвестный токен "="
+            string expression = "(3 + 4) = 5";
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => tokenizer.Tokenize(expression));
+        }
     }
 
-    /// <summary>
-    /// Проверяет, что токенизатор выбрасывает исключение для выражения с неизвестным символом.
-    /// </summary>
-    [Test]
-    public void ArithmeticTokenizer_Test_03()
+    public static class TokenizerTestRules
     {
-        // Arrange
-        var tokenizer = new ArithmeticTokenizer(new Func<string, (IToken, int)>[]
+        // Правила, чтобы не писать их заново в каждом тесте
+        public static readonly (Func<string, int> rule, Func<string, IToken> tokenCreator)[] DefaultRules = new (Func<string, int> rule, Func<string, IToken> tokenCreator)[]
         {
-                x => x.StartsWith("+") ? ((IToken)new PlusToken(), 1) : (new NumberToken(0), 0),
-                x => x.StartsWith("-") ? ((IToken)new MinusToken(), 1) : (new NumberToken(0), 0),
-                x => double.TryParse(x, out double number) ? ((IToken)new NumberToken(number), x.Length) : (new NumberToken(0), 0),
-        });
+            (x => x.StartsWith("+") ? 1 : 0, x => new PlusToken()),
+            (x => x.StartsWith("-") ? 1 : 0, x => new MinusToken()),
+            (x => x.StartsWith("*") ? 1 : 0, x => new MultiplyToken()),
+            (x => x.StartsWith("/") ? 1 : 0, x => new DivideToken()),
+            (x => x.StartsWith("(") ? 1 : 0, x => new LeftBracketToken()),
+            (x => x.StartsWith(")") ? 1 : 0, x => new RightBracketToken()),
+            (x => char.IsDigit(x[0]) ? GetNumberLength(x) : 0, x => new NumberToken(double.Parse(x)))
+            // Тип токена для пробела не существует
+            // При неизвестном токене, он по идеи 
+        };
 
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => tokenizer.Tokenize("1 + 2 & 3.5"));
-    }
-
-    /// <summary>
-    /// Проверяет, что для пустого выражения возвращается пустой список токенов.
-    /// </summary>
-    [Test]
-    public void ArithmeticTokenizer_Test_02()
-    {
-        // Arrange
-        var tokenizer = new ArithmeticTokenizer(new Func<string, (IToken, int)>[]
+        // Вспомогательный метод для определения длины числа в строке
+        private static int GetNumberLength(string input)
         {
-                x => x.StartsWith("+") ? ((IToken)new PlusToken(), 1) : (new NumberToken(0), 0),
-                x => x.StartsWith("-") ? ((IToken)new MinusToken(), 1) : (new NumberToken(0), 0),
-                x => double.TryParse(x, out double number) ? ((IToken)new NumberToken(number), x.Length) : (new NumberToken(0), 0),
-        });
-
-        // Act
-        var tokens = tokenizer.Tokenize("");
-
-        // Assert
-        Assert.IsEmpty(tokens);
+            int length = 0;
+            foreach (char c in input)
+            {
+                if (char.IsDigit(c) || c == '.')
+                {
+                    length++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return length;
+        }
     }
 }
