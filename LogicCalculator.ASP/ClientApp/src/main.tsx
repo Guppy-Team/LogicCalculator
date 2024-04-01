@@ -1,8 +1,8 @@
-import React, { StrictMode } from 'react';
+import { createTheme, MantineProvider, rem } from '@mantine/core';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { createTheme, MantineProvider, rem } from '@mantine/core';
 
 import store from './store/store';
 
@@ -21,13 +21,9 @@ const theme = createTheme({
   },
 });
 
-const baseUrl =
-  document.getElementsByTagName('base')[0]?.getAttribute('href') || '/';
+const baseUrl = document.getElementsByTagName('base')[0]?.getAttribute('href') || '/';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
-);
-root.render(
+ReactDOM.createRoot(document.getElementById('root')! as HTMLElement).render(
   <StrictMode>
     <BrowserRouter basename={baseUrl}>
       <Provider store={store}>
