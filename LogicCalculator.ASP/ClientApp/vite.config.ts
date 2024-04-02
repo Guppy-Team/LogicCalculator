@@ -1,11 +1,12 @@
 import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig } from 'vite';
-import plugin from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react-swc';
+import child_process from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import child_process from 'child_process';
 import { env } from 'process';
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 const baseFolder =
   env.APPDATA !== undefined && env.APPDATA !== ''
@@ -35,7 +36,14 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [plugin()],
+  plugins: [react(), tsconfigPaths()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "./src/_mantine";`,
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
