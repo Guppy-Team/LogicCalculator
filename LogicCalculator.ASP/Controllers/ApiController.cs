@@ -47,10 +47,17 @@ namespace LogicCalculator.ASP.Controllers
                 var tokens = _tokenizer.Tokenize(request.Expression);
                 var response = new TokenizeResponse
                 {
-                    Result = tokens.Select(token => new TokenResult
+                    Result = tokens.Select(token =>
                     {
-                        Token = token.GetType().Name,
-                        Value = token is NumberToken numberToken ? numberToken.Value.ToString() : null
+                        var tokenType = token.GetType();
+                        var valueProperty = tokenType.GetProperty("Value");
+                        var value = valueProperty != null ? valueProperty.GetValue(token)?.ToString() : null;
+
+                        return new TokenResult
+                        {
+                            Token = tokenType.Name,
+                            Value = value
+                        };
                     }).ToList()
                 };
                 return Ok(response);
