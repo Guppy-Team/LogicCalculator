@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using LogicCalculator.ASP.Dtos;
 using LogicCalculator.Core.Shared.Interfaces;
@@ -17,16 +18,24 @@ namespace LogicCalculator.ASP.Controllers
         {
             _tokenizer = new Tokenizer(new (Func<string, int>, Func<string, IToken>)[]
             {
-                (x => x.StartsWith("+") ? 1 : 0, x => new PlusToken()),
-                (x => x.StartsWith("-") ? 1 : 0, x => new MinusToken()),
-                (x => x.StartsWith("*") ? 1 : 0, x => new MultiplyToken()),
-                (x => x.StartsWith("/") ? 1 : 0, x => new DivideToken()),
-                (x => x.StartsWith("(") ? 1 : 0, x => new LeftBracketToken()),
-                (x => x.StartsWith(")") ? 1 : 0, x => new RightBracketToken()),
-                (x => x.StartsWith("=") ? 1 : 0, x => new EqualsToken()),
-                (x => Regex.Match(x, @"^\s+").Success ? Regex.Match(x, @"^\s+").Length : 0, x => new SpaceToken()),
-                (x => Regex.Match(x, @"^\d+(\.\d*)?").Success ? Regex.Match(x, @"^\d+(\.\d*)?").Length : 0, x => new NumberToken(double.Parse(x))),
+                (x => x.StartsWith("+") ? 1 : 0, _ => new PlusToken()),
+                (x => x.StartsWith("-") ? 1 : 0, _ => new MinusToken()),
+                (x => x.StartsWith("*") ? 1 : 0, _ => new MultiplyToken()),
+                (x => x.StartsWith("/") ? 1 : 0, _ => new DivideToken()),
+                (x => x.StartsWith("(") ? 1 : 0, _ => new LeftBracketToken()),
+                (x => x.StartsWith(")") ? 1 : 0, _ => new RightBracketToken()),
+                (x => x.StartsWith("=") ? 1 : 0, _ => new EqualsToken()),
+                (x => GetMatchLength(x, @"^\s+"), x => new SpaceToken()),
+                // NumberStyles.Number, CultureInfo.InvariantCulture добавлены,
+                // чтобы избавиться от приколов с точками и запятыми
+                (x => GetMatchLength(x, @"^\d+([,.]\d*)?"), x => new NumberToken(double.Parse(x, NumberStyles.Number, CultureInfo.InvariantCulture))),
             });
+        }
+
+        private int GetMatchLength(string input, string pattern)
+        {
+            var match = Regex.Match(input, pattern);
+            return match.Success ? match.Length : 0;
         }
 
         [HttpPost]
