@@ -5,6 +5,7 @@ namespace LogicCalculator.Core.Shared.ExpressionEvaluators;
 
 public class RpnExpressionBuilder
 {
+    //! Нужно принимать через правила
     private static Dictionary<IToken, int> OperatorPriorities { get; set; } = new Dictionary<IToken, int>
     {
         { new PlusToken(), 2 },
@@ -13,9 +14,15 @@ public class RpnExpressionBuilder
         { new DivideToken(), 3 },
     };
 
-    public static IExpression Build(IEnumerable<IToken> expression)
+    
+    public static IExpression Build(IEnumerable<IToken> expression, Dictionary<IToken, int> operatorPriorities)
     {
+        OperatorPriorities = operatorPriorities;
+        
         var output = new List<IToken>();
+        
+        List<IToken> variables = new();
+        
         var operatorStack = new Stack<IToken>();
         
         foreach (var token in expression)
@@ -23,7 +30,12 @@ public class RpnExpressionBuilder
             switch (token)
             {
                 case NumberToken:
+                    variables.Add(token);
+                    output.Add(token);
+                    break;
+                
                 case VariableToken:
+                    
                     output.Add(token);
                     break;
                 
@@ -66,7 +78,7 @@ public class RpnExpressionBuilder
             output.Add(operatorStack.Pop());
         }
 
-        var result = new RpnExpression(output);
+        var result = new RpnExpression(output, variables);
         
         return result;
     }
