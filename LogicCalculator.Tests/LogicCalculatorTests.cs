@@ -1,6 +1,7 @@
 using LogicCalculator.Core.Shared.Interfaces;
 using LogicCalculator.Core.Shared.Tokenizers;
 using LogicCalculator.Core.Shared.Tokens;
+using System.Text.RegularExpressions;
 
 namespace LogicCalculator.Tests;
 
@@ -261,50 +262,19 @@ public class Tests
     public static class TokenizerTestRules
     {
         // ѕравила, чтобы не писать их заново в каждом тесте
-        // — пробелами
-        public static readonly (Func<string, int> rule, Func<string, IToken> tokenCreator)[] DefaultRules = new (Func<string, int> rule, Func<string, IToken> tokenCreator)[]
+        public static readonly (Func<string, int> rule, Func<string, string, int, IToken> tokenCreator, string tokenType, int priority)[] DefaultRules =
         {
-            (x => x.StartsWith("+") ? 1 : 0, x => new PlusToken()),
-            (x => x.StartsWith("-") ? 1 : 0, x => new MinusToken()),
-            (x => x.StartsWith("*") ? 1 : 0, x => new MultiplyToken()),
-            (x => x.StartsWith("/") ? 1 : 0, x => new DivideToken()),
-            (x => x.StartsWith("(") ? 1 : 0, x => new LeftBracketToken()),
-            (x => x.StartsWith(")") ? 1 : 0, x => new RightBracketToken()),
-            (x => x.StartsWith(" ") ? 1 : 0, x => new SpaceToken()),
-            (x => x.StartsWith("=") ? 1 : 0, x => new EqualsToken()),
-            (x => char.IsDigit(x[0]) ? GetNumberLength(x) : 0, x => new NumberToken(double.Parse(x)))
+            (x => x.StartsWith("+") ? 1 : 0, (x, type, priority) => new PlusToken(), "Operator", 2),
+            (x => x.StartsWith("-") ? 1 : 0, (x, type, priority) => new MinusToken(), "Operator", 2),
+            (x => x.StartsWith("*") ? 1 : 0, (x, type, priority) => new MultiplyToken(), "Operator", 3),
+            (x => x.StartsWith("/") ? 1 : 0, (x, type, priority) => new DivideToken(), "Operator", 3),
+            (x => x.StartsWith("(") ? 1 : 0, (x, type, priority) => new LeftBracketToken(), "LeftBracket", 0),
+            (x => x.StartsWith(")") ? 1 : 0, (x, type, priority) => new RightBracketToken(), "RightBracket", 0),
+            (x => x.StartsWith("=") ? 1 : 0, (x, type, priority) => new EqualsToken(), "Operator", 0),
+            (x => Regex.Match(input: x, pattern: @"^\s+").Success ?
+                Regex.Match(input: x, pattern: @"^\s+").Length : 0, (x, type, priority) => new SpaceToken(), "Space", 0),
+            (x => Regex.Match(input: x, pattern: @"^\d+(\.\d*)?").Success ?
+                Regex.Match(input: x, pattern: @"^\d+(\.\d*)?").Length :0, (x, type, priority) => new NumberToken(double.Parse(x)), "Variable", 0),
         };
-
-        // ѕравила без пробелов на вс€кий случай
-        // ¬ тестах не использовались
-        public static readonly (Func<string, int> rule, Func<string, IToken> tokenCreator)[] RulesWithoutSpace = new (Func<string, int> rule, Func<string, IToken> tokenCreator)[]
-        {
-            (x => x.StartsWith("+") ? 1 : 0, x => new PlusToken()),
-            (x => x.StartsWith("-") ? 1 : 0, x => new MinusToken()),
-            (x => x.StartsWith("*") ? 1 : 0, x => new MultiplyToken()),
-            (x => x.StartsWith("/") ? 1 : 0, x => new DivideToken()),
-            (x => x.StartsWith("(") ? 1 : 0, x => new LeftBracketToken()),
-            (x => x.StartsWith(")") ? 1 : 0, x => new RightBracketToken()),
-            (x => x.StartsWith("=") ? 1 : 0, x => new EqualsToken()),
-            (x => char.IsDigit(x[0]) ? GetNumberLength(x) : 0, x => new NumberToken(double.Parse(x)))
-        };
-
-        // ¬спомогательный метод дл€ определени€ длины числа в строке
-        private static int GetNumberLength(string input)
-        {
-            int length = 0;
-            foreach (char c in input)
-            {
-                if (char.IsDigit(c) || c == '.')
-                {
-                    length++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return length;
-        }
     }
 }

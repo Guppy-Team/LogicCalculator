@@ -1,21 +1,18 @@
 ﻿using LogicCalculator.Core.Shared.Interfaces;
-using LogicCalculator.Core.Shared.Tokens;
-using System.Data;
 
 namespace LogicCalculator.Core.Shared.Tokenizers;
 
-// TODO Переделать под новую структуру 
 public class Tokenizer : ITokenizer
 {
-    private readonly List<(Func<string, int> rule, Func<string, IToken> tokenCreator)> _rules;
+    private readonly List<(Func<string, int> rule, Func<string, string, int, IToken> tokenCreator, string tokenType, int priority)> _rules;
 
     /// <summary>
     /// Конструктор токенизатора, инициализирующий список правил.
     /// </summary>
     /// <param name="initialRules">Начальный набор правил в виде массива кортежей (правило, функция создания токена).</param>
-    public Tokenizer((Func<string, int> rule, Func<string, IToken> tokenCreator)[] initialRules)
+    public Tokenizer((Func<string, int> rule, Func<string, string, int, IToken> tokenCreator, string tokenType, int priority)[] initialRules)
     {
-        _rules = new List<(Func<string, int> rule, Func<string, IToken> tokenCreator)>(initialRules);
+        _rules = new List<(Func<string, int> rule, Func<string, string, int, IToken> tokenCreator, string tokenType, int priority)>(initialRules);
     }
 
     /// <summary>
@@ -30,13 +27,13 @@ public class Tokenizer : ITokenizer
         {
             bool ruleApplied = false; // Переменная для отслеживания применения правила
 
-            foreach (var (rule, tokenCreator) in _rules)
+            foreach (var (rule, tokenCreator, tokenType, priority) in _rules)
             {
                 int size = rule(expression);
                 if (size > 0)
                 {
                     // Создание токена и добавление его в список токенов
-                    tokens.Add(tokenCreator(expression.Substring(0, size)));
+                    tokens.Add(tokenCreator(expression.Substring(0, size), tokenType, priority));
                     // Удаление обработанной части выражения
                     expression = expression.Substring(size);
                     ruleApplied = true; // Правило было применено
