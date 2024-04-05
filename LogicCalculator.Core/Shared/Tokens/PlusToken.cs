@@ -2,7 +2,7 @@
 
 namespace LogicCalculator.Core.Shared.Tokens;
 
-public class PlusToken : IToken
+public class PlusToken : IToken, IOperator
 {
     
 }
