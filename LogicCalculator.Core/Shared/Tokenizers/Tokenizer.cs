@@ -1,10 +1,7 @@
 ﻿using LogicCalculator.Core.Shared.Interfaces;
-using LogicCalculator.Core.Shared.Tokens;
-using System.Data;
 
 namespace LogicCalculator.Core.Shared.Tokenizers;
 
-// TODO Переделать под новую структуру 
 public class Tokenizer : ITokenizer
 {
     private readonly List<(Func<string, int> rule, Func<string, IToken> tokenCreator)> _rules;
@@ -59,6 +56,3 @@ public class Tokenizer : ITokenizer
         return tokens;
     }
 }
-/*
-Место для заметок.
-*/
